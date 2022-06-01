@@ -22,5 +22,13 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        Button continentBtn = (Button) findViewById(R.id.button3);
+        continentBtn.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Intent continentIntent = new Intent(getApplicationContext(), GuessTheFlagContinentActivity.class);
+                startActivity(continentIntent);
+            }
+        });
     }
 }

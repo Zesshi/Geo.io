@@ -16,11 +16,10 @@
         android:theme="@style/Theme.AppCompat.NoActionBar"
         tools:targetApi="31">
         <activity
-<<<<<<< HEAD
             android:name=".GuessTheCapital"
-=======
+            android:exported="false"/>
+        <activity
             android:name=".GuessTheFlagActivity"
->>>>>>> 888d96ac5e82752a6b1b82119aa3e0ca474efc52
             android:exported="false" />
         <activity
             android:name=".MainActivity"

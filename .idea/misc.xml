@@ -3,9 +3,13 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
-        <entry key="..\:/Users/meiermanu/AndroidStudioProjects/Geoio/app/src/main/res/layout/activity_guess_the_capital.xml" value="0.2391304347826087" />
-        <entry key="..\:/Users/meiermanu/AndroidStudioProjects/Geoio/app/src/main/res/layout/activity_guess_the_flag.xml" value="0.33" />
-        <entry key="..\:/Users/meiermanu/AndroidStudioProjects/Geoio/app/src/main/res/layout/activity_main.xml" value="0.25" />
+        <entry key="..\:/Users/jennyto/AndroidStudioProjects/Geo.io/geo.io/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.117" />
+        <entry key="..\:/Users/jennyto/AndroidStudioProjects/Geo.io/geo.io/app/src/main/res/drawable/geo.io - logo_background.xml" value="0.14" />
+        <entry key="..\:/Users/jennyto/AndroidStudioProjects/Geo.io/geo.io/app/src/main/res/drawable/ic_launcher_background.xml" value="0.117" />
+        <entry key="..\:/Users/jennyto/AndroidStudioProjects/Geo.io/geo.io/app/src/main/res/layout/activity_guess_the_flag.xml" value="0.42916666666666664" />
+        <entry key="..\:/Users/jennyto/AndroidStudioProjects/Geo.io/geo.io/app/src/main/res/layout/activity_guess_the_flag_continent.xml" value="0.33" />
+        <entry key="..\:/Users/jennyto/AndroidStudioProjects/Geo.io/geo.io/app/src/main/res/layout/activity_main.xml" value="0.25" />
+        <entry key="..\:/Users/jennyto/AndroidStudioProjects/Geo.io/geo.io/app/src/main/res/mipmap-anydpi-v26/appicon.xml" value="0.117" />
       </map>
     </option>
   </component>
