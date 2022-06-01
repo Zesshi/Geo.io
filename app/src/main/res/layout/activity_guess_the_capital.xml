@@ -5,7 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".GuessTheCapital">
-
     <Button
         android:id="@+id/button5"
         android:layout_width="165dp"
@@ -57,5 +56,6 @@
         android:text="Button"
         tools:layout_editor_absoluteX="218dp"
         tools:layout_editor_absoluteY="624dp" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
