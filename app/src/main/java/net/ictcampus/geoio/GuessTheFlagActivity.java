@@ -8,12 +8,15 @@ import android.os.Looper;
 import android.util.Log;
 import android.widget.ArrayAdapter;
 
+import org.json.JSONObject;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Iterator;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -26,9 +29,9 @@ public class GuessTheFlagActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_guess_the_flag);
 
-        getFlag("https://restcountries.com/v3.1/all");
+        //getFlag("https://restcountries.com/v3.1/all");
     }
-
+/*
     private void getFlag(String urlParam) {
         ExecutorService executor = Executors.newSingleThreadExecutor();
         Handler handler = new Handler(Looper.getMainLooper());
@@ -55,16 +58,29 @@ public class GuessTheFlagActivity extends AppCompatActivity {
                 handler.post(new Runnable() {
                     @Override
                     public void run() {
-                        parseJson(msg.toString());
+                        //parseJson(msg.toString());
                     }
                 });
             }
         });
     }
 
+
     public void parseJson(String jsonstring) {
-        ArrayAdapter temps = new ArrayAdapter<String>(this, android.R.layout)
+        JSONObject jsonObj = null;
+
+        try {
+            jsonObj = new JSONObject(jsonstring);
+            JSONObject flag = jsonObj.getJSONObject("coatOfArms");
+            Iterator keys = flag.keys();
+            while (keys.hasNext()) {
+                String key = (String) keys.next();
+                JSONObject
+            }
+        }
     }
+*/
+
 }
 
 
