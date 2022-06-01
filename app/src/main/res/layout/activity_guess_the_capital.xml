@@ -7,6 +7,31 @@
     android:layout_height="match_parent"
     tools:context=".GuessTheFlagActivity">
 
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_row="0"
+        android:layout_column="0"
+        android:text="@string/guess_the_country_by_it_s_capital"
+        android:textColor="#EDEFFE"
+        android:textSize="20sp"
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteX="61dp"
+        tools:layout_editor_absoluteY="108dp" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_row="0"
+        android:layout_column="0"
+        android:text="@string/question_40_256"
+        android:textColor="#EDEFFE"
+        android:textSize="20sp"
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteX="124dp"
+        tools:layout_editor_absoluteY="154dp" />
 
     <Button
         android:id="@+id/button6"
@@ -14,19 +39,21 @@
         android:layout_height="76dp"
         android:layout_marginStart="228dp"
         android:layout_marginTop="400dp"
-        android:backgroundTint="@color/light_grey"
-        android:text="Button"
+        android:backgroundTint="@color/green"
+        android:text="@string/obito_ist_ein_kek"
+        android:textColor="@color/black"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
 
+        android:id="@+id/button10"
         android:layout_width="165dp"
         android:layout_height="76dp"
         android:layout_marginStart="36dp"
         android:layout_marginTop="400dp"
         android:backgroundTint="@color/light_grey"
-        android:text="Button"
+        android:text="@string/kek"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -37,7 +64,7 @@
         android:layout_marginStart="36dp"
         android:layout_marginTop="488dp"
         android:backgroundTint="@color/light_grey"
-        android:text="Button"
+        android:text="@string/kek"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -48,7 +75,7 @@
         android:layout_marginStart="228dp"
         android:layout_marginTop="488dp"
         android:backgroundTint="@color/light_grey"
-        android:text="Button"
+        android:text="@string/kek"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -59,7 +86,7 @@
         android:layout_marginStart="228dp"
         android:layout_marginTop="576dp"
         android:backgroundTint="@color/light_grey"
-        android:text="Button"
+        android:text="@string/kek"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -70,7 +97,7 @@
         android:layout_marginStart="36dp"
         android:layout_marginTop="576dp"
         android:backgroundTint="@color/light_grey"
-        android:text="Button"
+        android:text="@string/kek"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
