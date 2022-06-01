@@ -8,6 +8,7 @@ import android.os.Looper;
 import android.util.Log;
 import android.widget.ArrayAdapter;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedInputStream;
@@ -16,6 +17,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -31,7 +33,7 @@ public class GuessTheFlagActivity extends AppCompatActivity {
 
         //getFlag("https://restcountries.com/v3.1/all");
     }
-/*
+
     private void getFlag(String urlParam) {
         ExecutorService executor = Executors.newSingleThreadExecutor();
         Handler handler = new Handler(Looper.getMainLooper());
@@ -67,6 +69,8 @@ public class GuessTheFlagActivity extends AppCompatActivity {
 
 
     public void parseJson(String jsonstring) {
+        ArrayList<String> imgUrls = new ArrayList<>();
+
         JSONObject jsonObj = null;
 
         try {
@@ -75,11 +79,17 @@ public class GuessTheFlagActivity extends AppCompatActivity {
             Iterator keys = flag.keys();
             while (keys.hasNext()) {
                 String key = (String) keys.next();
-                JSONObject
+                Log.wtf(TAG, key);
+                JSONObject subObj = flag.getJSONObject(key);
+                String imgUrl = subObj.getString("png");
+                Log.wtf(TAG, imgUrl);
+                imgUrls.add(imgUrl);
             }
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
     }
-*/
+
 
 }
 
