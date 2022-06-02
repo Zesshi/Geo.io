@@ -7,6 +7,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
