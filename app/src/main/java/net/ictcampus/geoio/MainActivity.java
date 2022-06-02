@@ -30,5 +30,14 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(continentIntent);
             }
         });
+
+
+        Button guessTheCapitalButton = (Button) findViewById(R.id.button4);
+        guessTheCapitalButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Intent capitalintent = new Intent(getApplicationContext(), GuessTheCapital.class);
+                startActivity(capitalintent);
+            }
+        });
     }
 }
