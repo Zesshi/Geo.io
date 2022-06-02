@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="net.ictcampus.geoio">
 
-    <uses-permission android:name="android.permission.INTERNET"></uses-permission>
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
@@ -16,10 +16,28 @@
         android:theme="@style/Theme.AppCompat.NoActionBar"
         tools:targetApi="31">
         <activity
+            android:name=".GuessTheFlagOceaniaActivity"
+            android:exported="false" />
+        <activity
+            android:name=".GuessTheFlagAfricaActivity"
+            android:exported="false" />
+        <activity
+            android:name=".GuessTheFlagAmericaActivity"
+            android:exported="false" />
+        <activity
+            android:name=".GuessTheFlagAsiaActivity"
+            android:exported="false" />
+        <activity
+            android:name=".GuessTheFlagEuropeActivity"
+            android:exported="false" />
+        <activity
             android:name=".GuessTheCapital"
-            android:exported="false"/>
+            android:exported="false" />
         <activity
             android:name=".GuessTheFlagActivity"
+            android:exported="false" />
+        <activity
+            android:name=".GuessTheFlagContinentActivity"
             android:exported="false" />
         <activity
             android:name=".MainActivity"
