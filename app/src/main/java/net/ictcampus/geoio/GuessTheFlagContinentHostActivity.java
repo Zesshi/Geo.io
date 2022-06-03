@@ -14,7 +14,7 @@ public class GuessTheFlagContinentHostActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_guess_the_flag_continent);
+        setContentView(R.layout.activity_guess_the_flag_continent_host);
 
         Button europe = (Button) findViewById(R.id.europeBtn);
         europe.setOnClickListener(new View.OnClickListener() {

@@ -2,15 +2,12 @@ package net.ictcampus.geoio;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
-import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
@@ -22,10 +19,8 @@ import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.lang.reflect.Array;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.nio.Buffer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -39,6 +34,7 @@ public class GuessTheFlagContinentActivity extends AppCompatActivity {
 
     private static final String TAG = "FlagsOfEurope";
     private ImageView flag;
+    private TextView contName;
     private ArrayList<String> pngURL = new ArrayList<String>();
     private ArrayList<String> regions = new ArrayList<>();
     private final String BASEURL = "https://restcountries.com/v3.1/region/";
@@ -46,10 +42,13 @@ public class GuessTheFlagContinentActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_guess_the_flag_europe);
+        setContentView(R.layout.activity_guess_the_flag_continent);
 
         flag = (ImageView) findViewById(R.id.europeFlags);
         regions = getIntent().getStringArrayListExtra("regions");
+
+        contName = (TextView) findViewById(R.id.continentName);
+        contName.setText("Guess the Flag - "+ regions.get(0) );
 
         for (String region : regions){
             getFlags(BASEURL + region);
