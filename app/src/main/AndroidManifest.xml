@@ -16,19 +16,7 @@
         android:theme="@style/Theme.AppCompat.NoActionBar"
         tools:targetApi="31">
         <activity
-            android:name=".GuessTheFlagOceaniaActivity"
-            android:exported="false" />
-        <activity
-            android:name=".GuessTheFlagAfricaActivity"
-            android:exported="false" />
-        <activity
-            android:name=".GuessTheFlagAmericaActivity"
-            android:exported="false" />
-        <activity
-            android:name=".GuessTheFlagAsiaActivity"
-            android:exported="false" />
-        <activity
-            android:name=".GuessTheFlagEuropeActivity"
+            android:name=".GuessTheFlagContinentActivity"
             android:exported="false" />
         <activity
             android:name=".GuessTheCapital"
@@ -37,7 +25,7 @@
             android:name=".GuessTheFlagActivity"
             android:exported="false" />
         <activity
-            android:name=".GuessTheFlagContinentActivity"
+            android:name=".GuessTheFlagContinentHostActivity"
             android:exported="false" />
         <activity
             android:name=".MainActivity"

@@ -5,7 +5,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.Button;
 
 public class MainActivity extends AppCompatActivity {
@@ -26,7 +25,7 @@ public class MainActivity extends AppCompatActivity {
         Button continentBtn = (Button) findViewById(R.id.continentBtn);
         continentBtn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v){
-                Intent continentIntent = new Intent(getApplicationContext(), GuessTheFlagContinentActivity.class);
+                Intent continentIntent = new Intent(getApplicationContext(), GuessTheFlagContinentHostActivity.class);
                 startActivity(continentIntent);
             }
         });
