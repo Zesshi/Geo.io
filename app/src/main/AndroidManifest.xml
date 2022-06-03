@@ -16,6 +16,9 @@
         android:theme="@style/Theme.AppCompat.NoActionBar"
         tools:targetApi="31">
         <activity
+            android:name=".ReturnScreen"
+            android:exported="false" />
+        <activity
             android:name=".GuessTheFlagOceaniaActivity"
             android:exported="false" />
         <activity
