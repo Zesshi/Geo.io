@@ -42,6 +42,8 @@ public class GuessTheFlagActivity extends AppCompatActivity {
         returnImg.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), ReturnScreen.class);
+                String extra = getLocalClassName();
+                intent.putExtra("class", extra);
                 startActivity(intent);
             }
         });
