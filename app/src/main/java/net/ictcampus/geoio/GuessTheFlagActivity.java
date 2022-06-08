@@ -32,6 +32,7 @@ import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 public class GuessTheFlagActivity extends AppCompatActivity {
 
@@ -47,9 +48,10 @@ public class GuessTheFlagActivity extends AppCompatActivity {
     private Button button6;
     private ArrayList<String> countries = new ArrayList<String>();
     private ArrayList<String> pngURL = new ArrayList<String>();
-    private Integer questionNumber;
-    private Integer rightAnswer;
+    private int questionNumber;
+    private int rightAnswer;
     private String country;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Log.wtf(TAG, "23");
@@ -149,14 +151,15 @@ public class GuessTheFlagActivity extends AppCompatActivity {
             }
         });
 
-
         getJson("https://restcountries.com/v3.1/all");
 
     }
 
     private void renderGame() {
         if ( questionNumber == (countries.size() + 1) ){
-            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+            Intent intent = new Intent(getApplicationContext(), ResultScreenActivity.class);
+            intent.putExtra("correctAnswers", String.valueOf(rightAnswer));
+            intent.putExtra("numbOfQuestions", String.valueOf(countries.size()));
             finish();
             startActivity(intent);
         }
