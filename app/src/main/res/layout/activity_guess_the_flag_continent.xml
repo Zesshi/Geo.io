@@ -6,82 +6,89 @@
     android:layout_height="match_parent"
     tools:context=".GuessTheFlagContinentActivity">
 
-    <Button
-        android:id="@+id/asiaBtn"
-        android:layout_width="150dp"
-        android:layout_height="65dp"
-        android:layout_marginTop="24dp"
-        android:layout_marginEnd="48dp"
-        android:text="Asia"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/africaBtn" />
-
     <TextView
-        android:id="@+id/title"
+        android:id="@+id/continentName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_row="0"
         android:layout_column="0"
-        android:layout_marginTop="96dp"
-        android:text="Guess the Flag - Continents"
+        android:layout_marginTop="100dp"
+        android:text="Guess the Flag - "
         android:textColor="#EDEFFE"
-        android:textSize="24sp"
+        android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.495"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:ignore="MissingConstraints" />
 
-    <TextView
-        android:id="@+id/textView3"
+    <ImageView
+        android:id="@+id/europeFlags"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="36dp"
-        android:text="Choose a Continent"
-        android:textColor="#EDEFFE"
-        android:textSize="20sp"
+        android:layout_marginTop="32dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/title" />
+        app:layout_constraintTop_toBottomOf="@+id/continentName" />
 
     <Button
-        android:id="@+id/europeBtn"
-        android:layout_width="150dp"
-        android:layout_height="65dp"
+        android:id="@+id/button11"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginStart="48dp"
-        android:layout_marginTop="56dp"
-        android:text="Europe"
+        android:layout_marginTop="24dp"
+        android:text="Button"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView3" />
+        app:layout_constraintTop_toBottomOf="@+id/button16" />
 
     <Button
-        android:id="@+id/africaBtn"
-        android:layout_width="150dp"
-        android:layout_height="65dp"
-        android:layout_marginTop="56dp"
+        android:id="@+id/button12"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
         android:layout_marginEnd="48dp"
-        android:text="Africa"
+        android:text="Button"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView3" />
+        app:layout_constraintTop_toBottomOf="@+id/button15" />
 
     <Button
-        android:id="@+id/americaBtn"
-        android:layout_width="150dp"
-        android:layout_height="65dp"
+        android:id="@+id/button13"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="480dp"
+        android:layout_marginEnd="48dp"
+        android:text="Button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/button14"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="48dp"
+        android:layout_marginTop="480dp"
+        android:text="Button"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/button15"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="48dp"
+        android:text="Button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/button13" />
+
+    <Button
+        android:id="@+id/button16"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginStart="48dp"
         android:layout_marginTop="24dp"
-        android:text="North- / Southamerica"
+        android:text="Button"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/europeBtn" />
+        app:layout_constraintTop_toBottomOf="@+id/button14" />
 
-    <Button
-        android:id="@+id/oceaniaBtn"
-        android:layout_width="150dp"
-        android:layout_height="65dp"
-        android:layout_marginTop="24dp"
-        android:text="Oceania / Antarctica"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/americaBtn" />
 </androidx.constraintlayout.widget.ConstraintLayout>
