@@ -2,6 +2,7 @@ package net.ictcampus.geoio;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.nfc.Tag;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -19,6 +20,8 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -43,6 +46,7 @@ public class GuessTheCapital extends AppCompatActivity {
         button_cap1 = (TextView) findViewById(R.id.button_cap1);
 
         getCapital(BASEURL);
+        Log.wtf(TAG, String.valueOf(Caps));
 
     }
 
@@ -66,7 +70,6 @@ public class GuessTheCapital extends AppCompatActivity {
                 } catch (Exception e) {
                     Log.v(TAG, e.toString());
                 }
-
                 handler.post(new Runnable() {
                     @Override
                     public void run() {
@@ -77,25 +80,16 @@ public class GuessTheCapital extends AppCompatActivity {
         });
     }
 
-
     public void parseJson(String jsonString) {
-
         List<JSONArray> response = new ArrayList<>();
         JSONArray jsonArray = null;
-
         try {
             jsonArray = new JSONArray(jsonString);
-
             for (int i = 0; i < jsonArray.length(); i++) {
-
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
-
-
                 JSONArray capl = jsonObject.getJSONArray("capital");
                 Log.e(TAG, String.valueOf(capl));
-
                 // Log.e(TAG, String.valueOf(jsonObject));
-                System.out.println("HDHDHDHHDHDHHDHHDHDHDHHDHDHHDHDHHHHDHDHHDHDHDHHDHDHHDHDHHHHDHDHHDHDHDHHDHDHHDHDHHHHDHDHHDHDHDHHDHDHHDHDHHHHDHDHDHHHHDHDH");
 
                 response.add(capl);
 
@@ -105,12 +99,7 @@ public class GuessTheCapital extends AppCompatActivity {
             e.printStackTrace();
         }
         JSONArray randomURL = response.get(new Random().nextInt(response.size()));
-        capitals.setText((randomURL).toString());
-       button_cap1.setText("kek");
-        Log.e(TAG, String.valueOf(response));
-
+        capitals.setText((randomURL).toString().replace("[", "") .replace("]", "").replace("\"", "") .trim());
 
     }
-
-
 }
