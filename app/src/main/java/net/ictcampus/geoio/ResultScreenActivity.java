@@ -12,9 +12,8 @@ import android.widget.TextView;
 public class ResultScreenActivity extends AppCompatActivity {
 
     private static final String TAG = "Result";
-    private int correctAnswers;
-    private int numbOfQuestions;
-    private TextView result;
+    private int correctAnswers, numbOfQuestions, skippedQuestions;
+    private TextView result, skipped;
     private Button returnButton;
 
     @Override
@@ -24,6 +23,7 @@ public class ResultScreenActivity extends AppCompatActivity {
         Intent intent = getIntent();
         correctAnswers = Integer.parseInt(intent.getStringExtra("correctAnswers"));
         numbOfQuestions = Integer.parseInt(intent.getStringExtra("numbOfQuestions"));
+        skippedQuestions = Integer.parseInt(intent.getStringExtra("skipped"));
 
         Log.wtf(TAG, String.valueOf(correctAnswers));
         Log.wtf(TAG, String.valueOf(numbOfQuestions));
@@ -36,8 +36,10 @@ public class ResultScreenActivity extends AppCompatActivity {
         returnButton = (Button) findViewById(R.id.returnButton);
 
         result = (TextView) findViewById(R.id.result);
+        skipped = (TextView) findViewById(R.id.skippedQuestions);
 
         result.setText(correctAnswers + " / " + numbOfQuestions  + " correct | " + resultInPercent + "%");
+        skipped.setText("Skipped Questions: " + skippedQuestions);
 
         returnButton.setOnClickListener(new View.OnClickListener() {
             @Override

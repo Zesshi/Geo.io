@@ -41,7 +41,7 @@
 
 
     <TextView
-        android:id="@+id/textView_cap3"
+        android:id="@+id/capital"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_row="0"

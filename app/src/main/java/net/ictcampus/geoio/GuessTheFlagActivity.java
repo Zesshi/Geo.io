@@ -2,7 +2,13 @@ package net.ictcampus.geoio;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.res.ColorStateList;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -11,6 +17,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
@@ -34,23 +41,32 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-public class GuessTheFlagActivity extends AppCompatActivity {
+public class GuessTheFlagActivity extends AppCompatActivity implements SensorEventListener {
 
     private static final String TAG = "Flag";
+
     private ImageView flagImg;
+
     private TextView textView2;
     private TextView correct;
-    private Button button1;
-    private Button button2;
-    private Button button3;
-    private Button button4;
-    private Button button5;
-    private Button button6;
+
+    private SensorManager sensorManager;
+    private Sensor sensor;
+
+    private Button button1, button2, button3, button4, button5, button6;
+
     private ArrayList<String> countries = new ArrayList<String>();
     private ArrayList<String> pngURL = new ArrayList<String>();
-    private int questionNumber;
-    private int rightAnswer;
-    private String country;
+    private ArrayList<Button> buttons = new ArrayList<Button>();
+
+    private int questionNumber, realQuestionNumber, rightAnswer, skippedQuestion;
+
+    private float currentX, currentY, currentZ, lastX, lastY, lastZ, xDifference, yDifference, zDifference, shakeThreshold = 12f;
+
+    private String country, keepPlaying = "";
+
+    private boolean isAccelerometerSensorAvailable, notFirstTime = false;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,102 +80,69 @@ public class GuessTheFlagActivity extends AppCompatActivity {
         button4 = (Button) findViewById(R.id.button4);
         button5 = (Button) findViewById(R.id.button5);
         button6 = (Button) findViewById(R.id.button6);
+        buttons.add(button1);
+        buttons.add(button2);
+        buttons.add(button3);
+        buttons.add(button4);
+        buttons.add(button5);
+        buttons.add(button6);
         ImageView returnImg = (ImageView) findViewById(R.id.returnImg);
         textView2 = (TextView) findViewById(R.id.textView2);
         correct = (TextView) findViewById(R.id.correct);
+        sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         questionNumber = 1;
         rightAnswer = 0;
+        skippedQuestion = 0;
+        realQuestionNumber = 0;
 
+        if (sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER) != null) {
+            sensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+            isAccelerometerSensorAvailable = true;
+        } else {
+            isAccelerometerSensorAvailable = false;
+        }
 
         returnImg.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), ReturnScreen.class);
                 intent.putExtra("class", getLocalClassName());
+                intent.putExtra("Flaglist", pngURL);
+                intent.putExtra("Namelist", countries);
+                intent.putExtra("questionNumber", questionNumber);
+                intent.putExtra("realQuestionNumber", realQuestionNumber);
+                intent.putExtra("rightAnswer", rightAnswer);
+                intent.putExtra("skippedQuestions", skippedQuestion);
+                finish();
                 startActivity(intent);
             }
         });
-        button1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (button1.getText().equals(country)) {
-                    rightAnswer += 1;
+
+        for (Button button: buttons) {
+            button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (button.getText().equals(country)) {
+                        rightAnswer += 1;
+                    }
+                    questionNumber += 1;
+                    realQuestionNumber += 1;
+                    textView2.setText("Question " + questionNumber + "/" + countries.size());
+                    correct.setText("Correct: " + rightAnswer);
+                    renderGame();
                 }
-                questionNumber += 1;
-                textView2.setText("Question " + questionNumber + "/" + countries.size());
-                correct.setText("Correct: " + rightAnswer);
-                renderGame();
-            }
-        });
-        button2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (button2.getText().equals(country)) {
-                    rightAnswer += 1;
-                }
-                questionNumber += 1;
-                textView2.setText("Question " + questionNumber + "/" + countries.size());
-                correct.setText("Correct: " + rightAnswer);
-                renderGame();
-            }
-        });
-        button3.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (button3.getText().equals(country)) {
-                    rightAnswer += 1;
-                }
-                questionNumber += 1;
-                textView2.setText("Question " + questionNumber + "/" + countries.size());
-                correct.setText("Correct: " + rightAnswer);
-                renderGame();
-            }
-        });
-        button4.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (button4.getText().equals(country)) {
-                    rightAnswer += 1;
-                }
-                questionNumber += 1;
-                textView2.setText("Question " + questionNumber + "/" + countries.size());
-                correct.setText("Correct: " + rightAnswer);
-                renderGame();
-            }
-        });
-        button5.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (button5.getText().equals(country)) {
-                    rightAnswer += 1;
-                }
-                questionNumber += 1;
-                textView2.setText("Question " + questionNumber + "/" + countries.size());
-                correct.setText("Correct: " + rightAnswer);
-                renderGame();
-            }
-        });
-        button6.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (button6.getText().equals(country)) {
-                    rightAnswer += 1;
-                }
-                questionNumber += 1;
-                textView2.setText("Question " + questionNumber + "/" + countries.size());
-                correct.setText("Correct: " + rightAnswer);
-                renderGame();
-            }
-        });
+            });
+        }
 
         getJson("https://restcountries.com/v3.1/all");
-
     }
 
     private void renderGame() {
-        if ( questionNumber == (countries.size() + 1) ){
+
+        if (questionNumber == (countries.size() + 1)) {
             Intent intent = new Intent(getApplicationContext(), ResultScreenActivity.class);
             intent.putExtra("correctAnswers", String.valueOf(rightAnswer));
-            intent.putExtra("numbOfQuestions", String.valueOf(countries.size()));
+            intent.putExtra("skipped", String.valueOf(skippedQuestion));
+            intent.putExtra("numbOfQuestions", String.valueOf(realQuestionNumber));
             finish();
             startActivity(intent);
         }
@@ -168,7 +151,6 @@ public class GuessTheFlagActivity extends AppCompatActivity {
             answers.add("placeholder");
         }
         Integer index = new Random().nextInt(pngURL.size());
-
         String randomURL = pngURL.get(index);
         pngURL.remove(pngURL.get(index));
         Picasso.get().load(randomURL).into(flagImg);
@@ -177,35 +159,67 @@ public class GuessTheFlagActivity extends AppCompatActivity {
         countries.remove(countries.get(index));
         answers.set(0, country);
 
-        for (int i = 1; i < 6; i ++) {
+        for (int i = 1; i < 6; i++) {
             Integer random = new Random().nextInt(countries.size());
             answers.set(i, countries.get(random));
         }
         countries.add(country);
 
-        Integer random = new Random().nextInt(answers.size());
-        button1.setText(answers.get(random));
-        answers.remove(answers.get(random));
+        for (Button button : buttons) {
+            Integer random = new Random().nextInt(answers.size());
+            button.setText(answers.get(random));
+            answers.remove(answers.get(random));
+        }
 
-        random = new Random().nextInt(answers.size());
-        button2.setText(answers.get(random));
-        answers.remove(answers.get(random));
+    }
 
-        random = new Random().nextInt(answers.size());
-        button3.setText(answers.get(random));
-        answers.remove(answers.get(random));
+    @Override
+    public void onSensorChanged(SensorEvent sensorEvent) {
+        currentX = sensorEvent.values[0];
+        currentY = sensorEvent.values[1];
+        currentZ = sensorEvent.values[2];
 
-        random = new Random().nextInt(answers.size());
-        button4.setText(answers.get(random));
-        answers.remove(answers.get(random));
+        if (notFirstTime) {
+            xDifference = Math.abs(lastX - currentX);
+            yDifference = Math.abs(lastY - currentY);
+            zDifference = Math.abs(lastZ - currentZ);
 
-        random = new Random().nextInt(answers.size());
-        button5.setText(answers.get(random));
-        answers.remove(answers.get(random));
+            if ((xDifference > shakeThreshold && yDifference > shakeThreshold) ||
+                    (xDifference > shakeThreshold && zDifference > shakeThreshold) ||
+                    (yDifference > shakeThreshold && zDifference > shakeThreshold)) {
+                skippedQuestion += 1;
+                renderGame();
+                questionNumber += 1;
+                Toast.makeText(getApplicationContext(), "Skipped Question", Toast.LENGTH_SHORT).show();
+            }
+        }
 
-        random = new Random().nextInt(answers.size());
-        button6.setText(answers.get(random));
-        answers.remove(answers.get(random));
+        lastX = currentX;
+        lastY = currentY;
+        lastZ = currentZ;
+        notFirstTime = true;
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int i) {
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if (isAccelerometerSensorAvailable) {
+            sensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL);
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (isAccelerometerSensorAvailable) {
+            sensorManager.unregisterListener(this);
+        }
     }
 
     private void getJson(String urlParam) {
