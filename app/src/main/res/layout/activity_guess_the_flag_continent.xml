@@ -99,6 +99,7 @@
         android:layout_marginTop="4dp"
         android:text=""
         app:layout_constraintEnd_toEndOf="parent"
+        android:textSize="13sp"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/continentName" />
@@ -133,6 +134,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:text="Next Question"
+        android:backgroundTint="@color/light_grey"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"

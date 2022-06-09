@@ -40,7 +40,7 @@ public class GuessTheFlagContinentActivity extends AppCompatActivity {
     private static final String TAG = "FlagsOfEurope";
     private ImageView flag;
     private ImageView returnArr;
-    private Button answer1, answer2, answer3, answer4, answer5, answer6;
+    private Button answer1, answer2, answer3, answer4, answer5, answer6, correctBtn;
     private Button nextQ;
     private String correctAnswer;
     private TextView correctTxt;
@@ -122,145 +122,17 @@ public class GuessTheFlagContinentActivity extends AppCompatActivity {
                     if (button.getText().equals(correctAnswer)){
                         numberOfCorrect +=1;
                         button.setBackgroundColor(getResources().getColor(R.color.green));
+
+                    } else {
+                        button.setBackgroundColor(getResources().getColor(R.color.red));
+                        correctBtn.setBackgroundColor(getResources().getColor(R.color.green));
+
                     }
                 }
             });
         }
 
-        /*
-        answer1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (answer1.getText().equals(correctAnswer)) {
-                    numberOfCorrect += 1;
-                    answer1.setBackgroundColor(getResources().getColor(R.color.green));
-                }
 
-                //generateNewQuestion();
-
-
-//                questionnumber +=1;
-//                question.setText("Question "+questionnumber+"/"+nameArray.size());
-//                correctTxt.setText("Correct: " + numberOfCorrect);
-//                try {
-//                    TimeUnit.SECONDS.sleep(2);
-//                } catch (InterruptedException e) {
-//                    e.printStackTrace();
-//                }
-//                renderImage();
-            }
-        });
-
-        answer2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (answer2.getText().equals(correctAnswer)) {
-                    numberOfCorrect += 1;
-                    answer2.setBackgroundColor(getResources().getColor(R.color.green));
-                }
-
-                //generateNewQuestion();
-
-//                questionnumber +=1;
-//                question.setText("Question "+questionnumber+"/"+nameArray.size());
-//                correctTxt.setText("Correct: " + numberOfCorrect);
-//                try {
-//                    TimeUnit.SECONDS.sleep(2);
-//                } catch (InterruptedException e) {
-//                    e.printStackTrace();
-//                }
-//                renderImage();
-            }
-        });
-
-        answer3.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (answer3.getText().equals(correctAnswer)) {
-                    numberOfCorrect += 1;
-                    answer3.setBackgroundColor(getResources().getColor(R.color.green));
-                }
-
-                //    generateNewQuestion();
-
-//                questionnumber +=1;
-//                question.setText("Question "+questionnumber+"/"+nameArray.size());
-//                correctTxt.setText("Correct: " + numberOfCorrect);
-//                try {
-//                    TimeUnit.SECONDS.sleep(2);
-//                } catch (InterruptedException e) {
-//                    e.printStackTrace();
-//                }
-//                renderImage();
-            }
-        });
-
-        answer4.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (answer4.getText().equals(correctAnswer)) {
-                    numberOfCorrect += 1;
-                    answer4.setBackgroundColor(getResources().getColor(R.color.green));
-                }
-
-
-                //generateNewQuestion();
-
-//                questionnumber +=1;
-//                question.setText("Question "+questionnumber+"/"+nameArray.size());
-//                correctTxt.setText("Correct: " + numberOfCorrect);
-//                try {
-//                    TimeUnit.SECONDS.sleep(2);
-//                } catch (InterruptedException e) {
-//                    e.printStackTrace();
-//                }
-//                renderImage();
-            }
-        });
-
-        answer5.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (answer5.getText().equals(correctAnswer)) {
-                    numberOfCorrect += 1;
-                    answer5.setBackgroundColor(getResources().getColor(R.color.green));
-                }
-                //generateNewQuestion();
-
-//                questionnumber +=1;
-//                question.setText("Question "+questionnumber+"/"+nameArray.size());
-//                correctTxt.setText("Correct: " + numberOfCorrect);
-//                try {
-//                    TimeUnit.SECONDS.sleep(2);
-//                } catch (InterruptedException e) {
-//                    e.printStackTrace();
-//                }
-//                renderImage();
-            }
-        });
-
-        answer6.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (answer6.getText().equals(correctAnswer)) {
-                    numberOfCorrect += 1;
-                    answer6.setBackgroundColor(getResources().getColor(R.color.green));
-                    answer6.setTextColor(getResources().getColor(R.color.light_grey));
-                }
-                //generateNewQuestion();
-
-//                questionnumber +=1;
-//                question.setText("Question "+questionnumber+"/"+nameArray.size());
-//                correctTxt.setText("Correct: " + numberOfCorrect);
-//                try {
-//                    TimeUnit.SECONDS.sleep(2);
-//                } catch (InterruptedException e) {
-//                    e.printStackTrace();
-//                }
-//                renderImage();
-
-            }
-        });*/
 
         nextQ.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -268,6 +140,9 @@ public class GuessTheFlagContinentActivity extends AppCompatActivity {
                 questionnumber +=1;
                 question.setText("Question "+questionnumber+"/"+nameArray.size());
                 correctTxt.setText("Correct: " + numberOfCorrect);
+                for (Button button : buttons) {
+                    button.setBackgroundColor(getResources().getColor(R.color.light_grey));
+                }
                 renderImage();
 
             }
@@ -460,7 +335,20 @@ public class GuessTheFlagContinentActivity extends AppCompatActivity {
     }
 
     private void setButtonText() {
-        Integer randNr = new Random().nextInt(answers.size());
+
+        for (Button button : buttons) {
+            Integer randNr = new Random().nextInt(answers.size());
+            if (answers.get(randNr).equals(correctAnswer)) {
+                correctBtn = button;
+            }
+            button.setText(answers.get(randNr));
+            answers.remove(answers.get(randNr));
+
+            button.setBackgroundColor(getResources().getColor(R.color.light_grey));
+        }
+
+
+        /*
         answer1.setText(answers.get(randNr));
         answers.remove(answer1.getText());
         randNr = new Random().nextInt(answers.size());
@@ -477,7 +365,7 @@ public class GuessTheFlagContinentActivity extends AppCompatActivity {
         answers.remove(answer5.getText());
         randNr = new Random().nextInt(answers.size());
         answer6.setText(answers.get(randNr));
-        answers.remove(answer6.getText());
+        answers.remove(answer6.getText()); */
 
     }
 
