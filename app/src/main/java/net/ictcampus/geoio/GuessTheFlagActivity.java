@@ -2,6 +2,7 @@ package net.ictcampus.geoio;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
@@ -47,13 +48,12 @@ public class GuessTheFlagActivity extends AppCompatActivity implements SensorEve
 
     private ImageView flagImg;
 
-    private TextView textView2;
-    private TextView correct;
+    private TextView textView2, correct;
 
     private SensorManager sensorManager;
     private Sensor sensor;
 
-    private Button button1, button2, button3, button4, button5, button6;
+    private Button button1, button2, button3, button4, button5, button6, nextButton, correctButton;
 
     private ArrayList<String> countries = new ArrayList<String>();
     private ArrayList<String> pngURL = new ArrayList<String>();
@@ -63,16 +63,16 @@ public class GuessTheFlagActivity extends AppCompatActivity implements SensorEve
 
     private float currentX, currentY, currentZ, lastX, lastY, lastZ, xDifference, yDifference, zDifference, shakeThreshold = 12f;
 
-    private String country, keepPlaying = "";
+    private String country;
 
     private boolean isAccelerometerSensorAvailable, notFirstTime = false;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Log.wtf(TAG, "23");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_guess_the_flag);
+
         flagImg = (ImageView) findViewById(R.id.flagImg);
         button1 = (Button) findViewById(R.id.button1);
         button2 = (Button) findViewById(R.id.button2);
@@ -80,6 +80,7 @@ public class GuessTheFlagActivity extends AppCompatActivity implements SensorEve
         button4 = (Button) findViewById(R.id.button4);
         button5 = (Button) findViewById(R.id.button5);
         button6 = (Button) findViewById(R.id.button6);
+        nextButton = (Button) findViewById(R.id.next);
         buttons.add(button1);
         buttons.add(button2);
         buttons.add(button3);
@@ -117,6 +118,16 @@ public class GuessTheFlagActivity extends AppCompatActivity implements SensorEve
             }
         });
 
+        nextButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                for (Button button: buttons) {
+                    button.setBackgroundColor(getResources().getColor(R.color.light_grey));
+                }
+                renderGame();
+            }
+        });
+
         for (Button button: buttons) {
             button.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -128,12 +139,23 @@ public class GuessTheFlagActivity extends AppCompatActivity implements SensorEve
                     realQuestionNumber += 1;
                     textView2.setText("Question " + questionNumber + "/" + countries.size());
                     correct.setText("Correct: " + rightAnswer);
-                    renderGame();
+                    showSolution(button);
                 }
             });
         }
 
         getJson("https://restcountries.com/v3.1/all");
+    }
+
+
+    @SuppressLint("ResourceAsColor")
+    private void showSolution(Button button) {
+        if (button.getText().equals(country)) {
+            button.setBackgroundColor(R.color.green);
+        } else {
+            button.setBackgroundColor(R.color.red);
+            correctButton.setBackgroundColor(R.color.green);
+        }
     }
 
     private void renderGame() {
@@ -167,6 +189,9 @@ public class GuessTheFlagActivity extends AppCompatActivity implements SensorEve
 
         for (Button button : buttons) {
             Integer random = new Random().nextInt(answers.size());
+            if (answers.get(random).equals(country)) {
+                correctButton = button;
+            }
             button.setText(answers.get(random));
             answers.remove(answers.get(random));
         }
@@ -254,6 +279,7 @@ public class GuessTheFlagActivity extends AppCompatActivity implements SensorEve
         });
     }
 
+    @SuppressLint("SetTextI18n")
     public void parseJson(String jsonString) {
         List<HashMap<String, String>> responseImg = new ArrayList<>();
         List<HashMap<String, String>> responseName = new ArrayList<>();

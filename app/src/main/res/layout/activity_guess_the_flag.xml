@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#403F4C"
     tools:context=".GuessTheFlagActivity">
 
 
@@ -142,12 +141,24 @@
         android:id="@+id/button6"
         android:layout_width="135dp"
         android:layout_height="85dp"
-        android:layout_marginTop="284dp"
+        android:layout_marginTop="236dp"
         android:backgroundTint="@color/light_grey"
         android:text=""
         app:iconTint="#5A5766"
         app:layout_constraintStart_toStartOf="@+id/button2"
         app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="MissingConstraints" />
+
+    <Button
+        android:id="@+id/next"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/light_grey"
+        android:text="Next Question"
+        android:textSize="8sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/button2"
         tools:ignore="MissingConstraints" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
