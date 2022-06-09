@@ -40,12 +40,7 @@ public class GuessTheFlagContinentActivity extends AppCompatActivity {
     private static final String TAG = "FlagsOfEurope";
     private ImageView flag;
     private ImageView returnArr;
-    private Button answer1;
-    private Button answer2;
-    private Button answer3;
-    private Button answer4;
-    private Button answer5;
-    private Button answer6;
+    private Button answer1, answer2, answer3, answer4, answer5, answer6;
     private Button nextQ;
     private String correctAnswer;
     private TextView correctTxt;
@@ -59,6 +54,7 @@ public class GuessTheFlagContinentActivity extends AppCompatActivity {
     private ArrayList<String> regions = new ArrayList<>();
     private ArrayList<String> answers = new ArrayList<>();
     private ArrayList<String> tempAnswers = new ArrayList<>();
+    private ArrayList<Button> buttons = new ArrayList<>();
     private final String BASEURL = "https://restcountries.com/v3.1/region/";
 
     @Override
@@ -77,6 +73,13 @@ public class GuessTheFlagContinentActivity extends AppCompatActivity {
         answer6 = (Button) findViewById(R.id.answer6);
 
         nextQ = (Button) findViewById(R.id.nextQuest);
+
+        buttons.add(answer1);
+        buttons.add(answer2);
+        buttons.add(answer3);
+        buttons.add(answer4);
+        buttons.add(answer5);
+        buttons.add(answer6);
 
         correctTxt = (TextView) findViewById(R.id.correctTxt);
 
@@ -112,6 +115,19 @@ public class GuessTheFlagContinentActivity extends AppCompatActivity {
             getFlags(regions.get(0));
         }*/
 
+        for (Button button: buttons) {
+            button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (button.getText().equals(correctAnswer)){
+                        numberOfCorrect +=1;
+                        button.setBackgroundColor(getResources().getColor(R.color.green));
+                    }
+                }
+            });
+        }
+
+        /*
         answer1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -244,7 +260,7 @@ public class GuessTheFlagContinentActivity extends AppCompatActivity {
 //                renderImage();
 
             }
-        });
+        });*/
 
         nextQ.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -252,7 +268,6 @@ public class GuessTheFlagContinentActivity extends AppCompatActivity {
                 questionnumber +=1;
                 question.setText("Question "+questionnumber+"/"+nameArray.size());
                 correctTxt.setText("Correct: " + numberOfCorrect);
-                answer6.setBackgroundColor(getResources().getColor(R.color.light_grey));
                 renderImage();
 
             }
