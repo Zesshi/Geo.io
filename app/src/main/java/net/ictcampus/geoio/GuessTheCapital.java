@@ -42,11 +42,11 @@ public class GuessTheCapital extends AppCompatActivity {
     private ArrayList<String> countrys = new ArrayList<>();
     private final String BASEURL = "https://restcountries.com/v3.1/all";
     private Button button_cap1, button_cap2, button_cap3, button_cap4, button_cap5, button_cap6;
-    private int questionNumber;
-    private int rightAnswer;
+    private ArrayList<Button> buttons = new ArrayList<Button>();
     private String country;
     private TextView correct;
     List<JSONArray> response = new ArrayList<>();
+    private int questionNumber, realQuestionNumber, rightAnswer, skippedQuestion;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,8 +64,16 @@ public class GuessTheCapital extends AppCompatActivity {
         textView_cap2 = (TextView) findViewById(R.id.textView_cap2);
         correct = (TextView) findViewById(R.id.correct1);
         getCapital(BASEURL);
+        buttons.add(button_cap1);
+        buttons.add(button_cap2);
+        buttons.add(button_cap3);
+        buttons.add(button_cap4);
+        buttons.add(button_cap5);
+        buttons.add(button_cap6);
         questionNumber = 1;
         rightAnswer = 0;
+        skippedQuestion = 0;
+        realQuestionNumber = 0;
 
 
         button_cap1.setOnClickListener(new View.OnClickListener() {
@@ -80,6 +88,22 @@ public class GuessTheCapital extends AppCompatActivity {
                 renderGame();
             }
         });
+
+        for (Button button: buttons) {
+            button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (button.getText().equals(country)) {
+                        rightAnswer += 1;
+                    }
+                    questionNumber += 1;
+                    realQuestionNumber += 1;
+                    textView_cap2.setText("Question " + questionNumber + "/" + countries.size());
+                    correct.setText("Correct: " + rightAnswer);
+                    renderGame();
+                }
+            });
+        }
     }
 
     private void renderGame() {
@@ -149,6 +173,7 @@ public class GuessTheCapital extends AppCompatActivity {
                 handler.post(new Runnable() {
                     @Override
                     public void run() {
+                        Log.e("MSG", msg.toString());
                         parseJson(msg.toString());
                     }
                 });
@@ -162,13 +187,15 @@ public class GuessTheCapital extends AppCompatActivity {
         JSONArray jsonArray = null;
         try {
             jsonArray = new JSONArray(jsonString);
+            //Log.e(TAG, String.valueOf(jsonArray));
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
                 JSONArray capl = jsonObject.getJSONArray("capital");
                 JSONObject name = jsonObject.getJSONObject("name");
 
-                Log.e(TAG, String.valueOf(jsonObject));
+                //Log.e(TAG, String.valueOf(jsonObject));
                 response.add(capl);
+                //Log.e("ARRAY", String.valueOf(response));
 
 
                 Iterator<?> iteratorName = name.keys();
@@ -196,8 +223,8 @@ public class GuessTheCapital extends AppCompatActivity {
             }
         }
 
-        Log.e(TAG, String.valueOf(countries));
-        Log.e(TAG, String.valueOf(response));
+        //Log.e(TAG, String.valueOf(countries));
+        //Log.e(TAG, String.valueOf(response));
         textView_cap2.setText("Question " + questionNumber + "/" + countries.size());
         correct.setText("Correct: " + rightAnswer);
         renderGame();

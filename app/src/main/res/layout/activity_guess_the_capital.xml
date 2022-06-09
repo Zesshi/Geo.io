@@ -42,7 +42,7 @@
         android:layout_row="0"
         android:layout_column="0"
         android:layout_marginTop="24dp"
-        android:text="@string/question_40_256"
+        android:text="@string/capital"
         android:textColor="#EDEFFE"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -74,7 +74,7 @@
         android:layout_marginTop="296dp"
         android:layout_marginEnd="16dp"
         android:backgroundTint="@color/light_grey"
-        android:text="@string/obito_ist_ein_kek"
+        android:text="@string/capital"
         android:textColor="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -87,7 +87,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="296dp"
         android:backgroundTint="@color/light_grey"
-        android:text="@string/kek"
+        android:text="@string/capital"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -98,7 +98,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="388dp"
         android:backgroundTint="@color/light_grey"
-        android:text="@string/kek"
+        android:text="@string/capital"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -109,7 +109,7 @@
         android:layout_marginTop="388dp"
         android:layout_marginEnd="16dp"
         android:backgroundTint="@color/light_grey"
-        android:text="@string/kek"
+        android:text="@string/capital"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -120,7 +120,7 @@
         android:layout_marginTop="480dp"
         android:layout_marginEnd="16dp"
         android:backgroundTint="@color/light_grey"
-        android:text="@string/kek"
+        android:text="@string/capital"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -131,7 +131,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="480dp"
         android:backgroundTint="@color/light_grey"
-        android:text="@string/kek"
+        android:text="@string/capital"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
