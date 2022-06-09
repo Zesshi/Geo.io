@@ -59,7 +59,7 @@ public class GuessTheFlagActivity extends AppCompatActivity implements SensorEve
     private ArrayList<String> pngURL = new ArrayList<String>();
     private ArrayList<Button> buttons = new ArrayList<Button>();
 
-    private int questionNumber, realQuestionNumber, rightAnswer, skippedQuestion;
+    private int questionNumber, realQuestionNumber, rightAnswer, skippedQuestion, isClickAllowed;
 
     private float currentX, currentY, currentZ, lastX, lastY, lastZ, xDifference, yDifference, zDifference, shakeThreshold = 12f;
 
@@ -95,6 +95,7 @@ public class GuessTheFlagActivity extends AppCompatActivity implements SensorEve
         rightAnswer = 0;
         skippedQuestion = 0;
         realQuestionNumber = 0;
+        isClickAllowed = 0;
 
         if (sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER) != null) {
             sensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
@@ -121,25 +122,25 @@ public class GuessTheFlagActivity extends AppCompatActivity implements SensorEve
         nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                for (Button button: buttons) {
-                    button.setBackgroundColor(getResources().getColor(R.color.light_grey));
-                }
                 renderGame();
             }
         });
 
-        for (Button button: buttons) {
+        for (Button button : buttons) {
             button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (button.getText().equals(country)) {
-                        rightAnswer += 1;
+                    if (isClickAllowed == 0) {
+                        isClickAllowed = 1;
+                        if (button.getText().equals(country)) {
+                            rightAnswer += 1;
+                        }
+                        questionNumber += 1;
+                        realQuestionNumber += 1;
+                        textView2.setText("Question " + questionNumber + "/" + countries.size());
+                        correct.setText("Correct: " + rightAnswer);
+                        showSolution(button);
                     }
-                    questionNumber += 1;
-                    realQuestionNumber += 1;
-                    textView2.setText("Question " + questionNumber + "/" + countries.size());
-                    correct.setText("Correct: " + rightAnswer);
-                    showSolution(button);
                 }
             });
         }
@@ -147,19 +148,20 @@ public class GuessTheFlagActivity extends AppCompatActivity implements SensorEve
         getJson("https://restcountries.com/v3.1/all");
     }
 
-
-    @SuppressLint("ResourceAsColor")
     private void showSolution(Button button) {
         if (button.getText().equals(country)) {
-            button.setBackgroundColor(R.color.green);
+            button.setBackgroundColor(getResources().getColor(R.color.green));
         } else {
-            button.setBackgroundColor(R.color.red);
-            correctButton.setBackgroundColor(R.color.green);
+            button.setBackgroundColor(getResources().getColor(R.color.red));
+            correctButton.setBackgroundColor(getResources().getColor(R.color.green));
         }
     }
 
     private void renderGame() {
-
+        for (Button button : buttons) {
+            button.setBackgroundColor(getResources().getColor(R.color.light_grey));
+        }
+        isClickAllowed = 0;
         if (questionNumber == (countries.size() + 1)) {
             Intent intent = new Intent(getApplicationContext(), ResultScreenActivity.class);
             intent.putExtra("correctAnswers", String.valueOf(rightAnswer));
