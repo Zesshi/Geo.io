@@ -2,12 +2,17 @@ package net.ictcampus.geoio;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.nfc.Tag;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
+
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -29,12 +34,19 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class GuessTheCapital extends AppCompatActivity {
+    ArrayList<String> answers = new ArrayList<String>();
     private static final String TAG = "Capitals";
-    private TextView capitals;
+    private ArrayList<String> countries = new ArrayList<String>();
+    private TextView capitals, textView_cap2;
     private ArrayList<String> Caps = new ArrayList<String>();
     private ArrayList<String> countrys = new ArrayList<>();
     private final String BASEURL = "https://restcountries.com/v3.1/all";
-    private TextView button_cap1;
+    private Button button_cap1, button_cap2, button_cap3, button_cap4, button_cap5, button_cap6;
+    private int questionNumber;
+    private int rightAnswer;
+    private String country;
+    private TextView correct;
+    List<JSONArray> response = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,11 +55,75 @@ public class GuessTheCapital extends AppCompatActivity {
 
         capitals = (TextView) findViewById(R.id.capital);
         countrys = getIntent().getStringArrayListExtra("countrys");
-        button_cap1 = (TextView) findViewById(R.id.button_cap1);
-
+        button_cap1 = (Button) findViewById(R.id.button_cap1);
+        button_cap2 = (Button) findViewById(R.id.button_cap2);
+        button_cap3 = (Button) findViewById(R.id.button_cap3);
+        button_cap4 = (Button) findViewById(R.id.button_cap4);
+        button_cap5 = (Button) findViewById(R.id.button_cap5);
+        button_cap6 = (Button) findViewById(R.id.button_cap6);
+        textView_cap2 = (TextView) findViewById(R.id.textView_cap2);
+        correct = (TextView) findViewById(R.id.correct1);
         getCapital(BASEURL);
-        Log.wtf(TAG, String.valueOf(Caps));
+        questionNumber = 1;
+        rightAnswer = 0;
 
+
+        button_cap1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (button_cap1.getText().equals(country)) {
+                    rightAnswer += 1;
+                }
+                questionNumber += 1;
+                textView_cap2.setText("Question " + questionNumber + "/" + countries.size());
+                correct.setText("Correct: " + rightAnswer);
+                renderGame();
+            }
+        });
+    }
+
+    private void renderGame() {
+        if (questionNumber == (countries.size() + 1)) {
+            Intent intent = new Intent(getApplicationContext(), ResultScreenActivity.class);
+            intent.putExtra("correctAnswers", String.valueOf(rightAnswer));
+            intent.putExtra("numbOfQuestions", String.valueOf(countries.size()));
+            finish();
+            startActivity(intent);
+        }
+
+        for (int i = 0; i < 6; i++) {
+            answers.add("placeholder");
+        }
+        Integer index = new Random().nextInt(response.size());
+
+
+        JSONArray randomURL = response.get(new Random().nextInt(response.size()));
+        response.remove(response.get(index));
+        capitals.setText((randomURL).toString().replace("[", "").replace("]", "").replace("\"", "").trim());
+
+        country = countries.get(index);
+        countries.remove(countries.get(index));
+        answers.set(0, country);
+
+        for (int i = 1; i < 6; i++) {
+            Integer random = new Random().nextInt(countries.size());
+            answers.set(i, countries.get(random));
+        }
+        countries.add(country);
+
+        putCapToButton(button_cap1);
+        putCapToButton(button_cap2);
+        putCapToButton(button_cap3);
+        putCapToButton(button_cap4);
+        putCapToButton(button_cap5);
+        putCapToButton(button_cap6);
+
+    }
+
+    private void putCapToButton(Button button_cap1) {
+        Integer random = new Random().nextInt(answers.size());
+        button_cap1.setText(answers.get(random));
+        answers.remove(answers.get(random));
     }
 
     private void getCapital(String urlParam) {
@@ -81,25 +157,50 @@ public class GuessTheCapital extends AppCompatActivity {
     }
 
     public void parseJson(String jsonString) {
-        List<JSONArray> response = new ArrayList<>();
+        List<HashMap<String, String>> responseName = new ArrayList<>();
+
         JSONArray jsonArray = null;
         try {
             jsonArray = new JSONArray(jsonString);
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
                 JSONArray capl = jsonObject.getJSONArray("capital");
-                Log.e(TAG, String.valueOf(capl));
-                // Log.e(TAG, String.valueOf(jsonObject));
+                JSONObject name = jsonObject.getJSONObject("name");
 
+                Log.e(TAG, String.valueOf(jsonObject));
                 response.add(capl);
 
 
+                Iterator<?> iteratorName = name.keys();
+
+                HashMap<String, String> mapName = new HashMap<>();
+
+
+                while (iteratorName.hasNext()) {
+                    Object key = iteratorName.next();
+                    Object value = name.get(key.toString());
+                    mapName.put(key.toString(), value.toString());
+                }
+
+                responseName.add(mapName);
             }
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        JSONArray randomURL = response.get(new Random().nextInt(response.size()));
-        capitals.setText((randomURL).toString().replace("[", "") .replace("]", "").replace("\"", "") .trim());
 
+        for (HashMap<String, String> _map2 : responseName) {
+            for (Map.Entry pair : _map2.entrySet()) {
+                if (pair.getKey().equals("common")) {
+                    countries.add(String.valueOf(pair.getValue()));
+                }
+            }
+        }
+
+        Log.e(TAG, String.valueOf(countries));
+        Log.e(TAG, String.valueOf(response));
+        textView_cap2.setText("Question " + questionNumber + "/" + countries.size());
+        correct.setText("Correct: " + rightAnswer);
+        renderGame();
     }
 }
+
