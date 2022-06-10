@@ -62,16 +62,17 @@ public class GuessTheFlagActivity extends AppCompatActivity implements SensorEve
     private ArrayList<String> answers = new ArrayList<String>();
     private ArrayList<Button> buttons = new ArrayList<Button>();
 
-    private int questionNumber, realQuestionNumber, rightAnswer, skippedQuestion;
+    private int questionNumber, realQuestionNumber, rightAnswer, skippedQuestion, numberOfQuestionsInt;
 
     private float currentX, currentY, currentZ, lastX, lastY, lastZ, xDifference, yDifference, zDifference, shakeThreshold = 12f;
 
-    private String country;
+    private String country, numberOfQuestions;
 
     private boolean isAccelerometerSensorAvailable, notFirstTime = false, isClickAllowed = true;
 
     private AlertDialog.Builder dialogBuilder;
     private Dialog dialog;
+    private Intent intent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,6 +101,9 @@ public class GuessTheFlagActivity extends AppCompatActivity implements SensorEve
         rightAnswer = 0;
         skippedQuestion = 0;
         realQuestionNumber = 0;
+        intent = getIntent();
+        numberOfQuestions = intent.getStringExtra("numberOfQuestions");
+        Log.wtf("numberOfQuestions", String.valueOf(numberOfQuestions));
 
         if (sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER) != null) {
             sensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
@@ -111,21 +115,14 @@ public class GuessTheFlagActivity extends AppCompatActivity implements SensorEve
         returnImg.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 showPopUp();
-
-                /*
-                Intent intent = new Intent(getApplicationContext(), ReturnScreen.class);
-                intent.putExtra("class", getLocalClassName());
-                finish();
-                startActivity(intent);
-
-                 */
             }
         });
+
         nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 questionNumber += 1;
-                textView2.setText("Question " + questionNumber + "/" + countries.size());
+                textView2.setText("Question " + questionNumber + "/" + numberOfQuestionsInt);
                 renderGame();
             }
         });
@@ -189,7 +186,7 @@ public class GuessTheFlagActivity extends AppCompatActivity implements SensorEve
             button.setBackgroundColor(getResources().getColor(R.color.light_grey));
         }
         isClickAllowed = true;
-        if (questionNumber == (countries.size() + 1)) {
+        if (questionNumber == (numberOfQuestionsInt + 1)) {
             Intent intent = new Intent(getApplicationContext(), ResultScreenActivity.class);
             intent.putExtra("correctAnswers", String.valueOf(rightAnswer));
             intent.putExtra("skipped", String.valueOf(skippedQuestion));
@@ -225,7 +222,7 @@ public class GuessTheFlagActivity extends AppCompatActivity implements SensorEve
             button.setText(answers.get(random));
             answers.remove(answers.get(random));
         }
-        textView2.setText("Question " + questionNumber + "/" + countries.size());
+        textView2.setText("Question " + questionNumber + "/" + numberOfQuestionsInt);
         correct.setText("Correct: " + rightAnswer);
     }
 
@@ -359,7 +356,14 @@ public class GuessTheFlagActivity extends AppCompatActivity implements SensorEve
                 }
             }
         }
-        textView2.setText("Question " + questionNumber + "/" + countries.size());
+
+        if (numberOfQuestions.equals("max")) {
+            numberOfQuestionsInt = countries.size();
+        } else {
+            numberOfQuestionsInt = Integer.valueOf(numberOfQuestions);
+        }
+
+        textView2.setText("Question " + questionNumber + "/" + numberOfQuestionsInt);
         correct.setText("Correct: " + rightAnswer);
         renderGame();
     }
