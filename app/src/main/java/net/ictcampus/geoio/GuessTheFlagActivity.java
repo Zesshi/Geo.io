@@ -1,8 +1,10 @@
 package net.ictcampus.geoio;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
@@ -57,22 +59,25 @@ public class GuessTheFlagActivity extends AppCompatActivity implements SensorEve
 
     private ArrayList<String> countries = new ArrayList<String>();
     private ArrayList<String> pngURL = new ArrayList<String>();
+    private ArrayList<String> answers = new ArrayList<String>();
     private ArrayList<Button> buttons = new ArrayList<Button>();
 
-    private int questionNumber, realQuestionNumber, rightAnswer, skippedQuestion, isClickAllowed;
+    private int questionNumber, realQuestionNumber, rightAnswer, skippedQuestion;
 
     private float currentX, currentY, currentZ, lastX, lastY, lastZ, xDifference, yDifference, zDifference, shakeThreshold = 12f;
 
     private String country;
 
-    private boolean isAccelerometerSensorAvailable, notFirstTime = false;
+    private boolean isAccelerometerSensorAvailable, notFirstTime = false, isClickAllowed = true;
 
+    private AlertDialog.Builder dialogBuilder;
+    private Dialog dialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_guess_the_flag);
-
+        Toast.makeText(getApplicationContext(), "Shake phone to skip question!", Toast.LENGTH_SHORT).show();
         flagImg = (ImageView) findViewById(R.id.flagImg);
         button1 = (Button) findViewById(R.id.button1);
         button2 = (Button) findViewById(R.id.button2);
@@ -95,7 +100,6 @@ public class GuessTheFlagActivity extends AppCompatActivity implements SensorEve
         rightAnswer = 0;
         skippedQuestion = 0;
         realQuestionNumber = 0;
-        isClickAllowed = 0;
 
         if (sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER) != null) {
             sensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
@@ -106,22 +110,22 @@ public class GuessTheFlagActivity extends AppCompatActivity implements SensorEve
 
         returnImg.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+                showPopUp();
+
+                /*
                 Intent intent = new Intent(getApplicationContext(), ReturnScreen.class);
                 intent.putExtra("class", getLocalClassName());
-                intent.putExtra("Flaglist", pngURL);
-                intent.putExtra("Namelist", countries);
-                intent.putExtra("questionNumber", questionNumber);
-                intent.putExtra("realQuestionNumber", realQuestionNumber);
-                intent.putExtra("rightAnswer", rightAnswer);
-                intent.putExtra("skippedQuestions", skippedQuestion);
                 finish();
                 startActivity(intent);
+
+                 */
             }
         });
-
         nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                questionNumber += 1;
+                textView2.setText("Question " + questionNumber + "/" + countries.size());
                 renderGame();
             }
         });
@@ -130,14 +134,12 @@ public class GuessTheFlagActivity extends AppCompatActivity implements SensorEve
             button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (isClickAllowed == 0) {
-                        isClickAllowed = 1;
+                    if (isClickAllowed) {
+                        isClickAllowed = false;
                         if (button.getText().equals(country)) {
                             rightAnswer += 1;
                         }
-                        questionNumber += 1;
                         realQuestionNumber += 1;
-                        textView2.setText("Question " + questionNumber + "/" + countries.size());
                         correct.setText("Correct: " + rightAnswer);
                         showSolution(button);
                     }
@@ -146,6 +148,31 @@ public class GuessTheFlagActivity extends AppCompatActivity implements SensorEve
         }
 
         getJson("https://restcountries.com/v3.1/all");
+    }
+
+    private void showPopUp() {
+        dialogBuilder = new AlertDialog.Builder(this);
+        final View popUp = getLayoutInflater().inflate(R.layout.activity_return_screen, null);
+        dialogBuilder.setView(popUp);
+        dialog = dialogBuilder.create();
+        dialog.show();
+
+        Button keepButton = (Button) popUp.findViewById(R.id.keepButton);
+        keepButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        Button quitButton = (Button) popUp.findViewById(R.id.quitButton);
+        quitButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent menu = new Intent(getApplicationContext(), MainActivity.class);
+                startActivity(menu);
+            }
+        });
     }
 
     private void showSolution(Button button) {
@@ -161,7 +188,7 @@ public class GuessTheFlagActivity extends AppCompatActivity implements SensorEve
         for (Button button : buttons) {
             button.setBackgroundColor(getResources().getColor(R.color.light_grey));
         }
-        isClickAllowed = 0;
+        isClickAllowed = true;
         if (questionNumber == (countries.size() + 1)) {
             Intent intent = new Intent(getApplicationContext(), ResultScreenActivity.class);
             intent.putExtra("correctAnswers", String.valueOf(rightAnswer));
@@ -171,11 +198,10 @@ public class GuessTheFlagActivity extends AppCompatActivity implements SensorEve
             startActivity(intent);
         }
 
-
-        ArrayList<String> answers = new ArrayList<String>();
         for (int i = 0; i < 6; i++) {
-            answers.add("placeholder");
+            answers.add("");
         }
+
         Integer index = new Random().nextInt(pngURL.size());
         String randomURL = pngURL.get(index);
         pngURL.remove(pngURL.get(index));
@@ -199,7 +225,8 @@ public class GuessTheFlagActivity extends AppCompatActivity implements SensorEve
             button.setText(answers.get(random));
             answers.remove(answers.get(random));
         }
-
+        textView2.setText("Question " + questionNumber + "/" + countries.size());
+        correct.setText("Correct: " + rightAnswer);
     }
 
     @Override
@@ -216,10 +243,11 @@ public class GuessTheFlagActivity extends AppCompatActivity implements SensorEve
             if ((xDifference > shakeThreshold && yDifference > shakeThreshold) ||
                     (xDifference > shakeThreshold && zDifference > shakeThreshold) ||
                     (yDifference > shakeThreshold && zDifference > shakeThreshold)) {
-                skippedQuestion += 1;
-                renderGame();
-                questionNumber += 1;
-                Toast.makeText(getApplicationContext(), "Skipped Question", Toast.LENGTH_SHORT).show();
+                if (isClickAllowed) {
+                    isClickAllowed = false;
+                    showSolution(correctButton);
+                    Toast.makeText(getApplicationContext(), "Skipped Question", Toast.LENGTH_SHORT).show();
+                }
             }
         }
 
@@ -277,23 +305,18 @@ public class GuessTheFlagActivity extends AppCompatActivity implements SensorEve
                     @Override
                     public void run() {
                         parseJson(msg.toString());
-
                     }
                 });
             }
         });
     }
 
-    //@SuppressLint("SetTextI18n")
     public void parseJson(String jsonString) {
         List<HashMap<String, String>> responseImg = new ArrayList<>();
         List<HashMap<String, String>> responseName = new ArrayList<>();
         JSONArray jsonArray = null;
-
-
         try {
             jsonArray = new JSONArray(jsonString);
-            Log.e("msg", String.valueOf(jsonArray));
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
                 JSONObject flg = jsonObject.getJSONObject("flags");
@@ -302,6 +325,7 @@ public class GuessTheFlagActivity extends AppCompatActivity implements SensorEve
                 Iterator<?> iteratorName = name.keys();
                 HashMap<String, String> mapFlg = new HashMap<>();
                 HashMap<String, String> mapName = new HashMap<>();
+
                 while (iteratorFlg.hasNext()) {
                     Object key = iteratorFlg.next();
                     Object value = flg.get(key.toString());
@@ -316,8 +340,6 @@ public class GuessTheFlagActivity extends AppCompatActivity implements SensorEve
 
                 responseImg.add(mapFlg);
                 responseName.add(mapName);
-
-
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -337,8 +359,6 @@ public class GuessTheFlagActivity extends AppCompatActivity implements SensorEve
                 }
             }
         }
-        Log.e("countrys", String.valueOf(countries));
-
         textView2.setText("Question " + questionNumber + "/" + countries.size());
         correct.setText("Correct: " + rightAnswer);
         renderGame();
