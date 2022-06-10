@@ -8,10 +8,10 @@
 
     <Button
         android:id="@+id/asiaBtn"
-        android:layout_width="150dp"
+        android:layout_width="135dp"
         android:layout_height="65dp"
         android:layout_marginTop="24dp"
-        android:layout_marginEnd="48dp"
+        android:layout_marginEnd="40dp"
         android:text="Asia"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/africaBtn" />
@@ -47,9 +47,9 @@
 
     <Button
         android:id="@+id/europeBtn"
-        android:layout_width="150dp"
+        android:layout_width="135dp"
         android:layout_height="65dp"
-        android:layout_marginStart="48dp"
+        android:layout_marginStart="40dp"
         android:layout_marginTop="56dp"
         android:text="Europe"
         app:layout_constraintStart_toStartOf="parent"
@@ -57,19 +57,19 @@
 
     <Button
         android:id="@+id/africaBtn"
-        android:layout_width="150dp"
+        android:layout_width="135dp"
         android:layout_height="65dp"
         android:layout_marginTop="56dp"
-        android:layout_marginEnd="48dp"
+        android:layout_marginEnd="40dp"
         android:text="Africa"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView3" />
 
     <Button
         android:id="@+id/americaBtn"
-        android:layout_width="150dp"
+        android:layout_width="135dp"
         android:layout_height="65dp"
-        android:layout_marginStart="48dp"
+        android:layout_marginStart="40dp"
         android:layout_marginTop="24dp"
         android:text="North- / Southamerica"
         app:layout_constraintStart_toStartOf="parent"
@@ -77,7 +77,7 @@
 
     <Button
         android:id="@+id/oceaniaBtn"
-        android:layout_width="150dp"
+        android:layout_width="135dp"
         android:layout_height="65dp"
         android:layout_marginTop="24dp"
         android:text="Oceania / Antarctica"

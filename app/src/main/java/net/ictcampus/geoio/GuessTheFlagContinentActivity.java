@@ -2,6 +2,7 @@ package net.ictcampus.geoio;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.nfc.Tag;
 import android.os.Bundle;
 import android.os.Handler;
@@ -32,24 +33,28 @@ import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 public class GuessTheFlagContinentActivity extends AppCompatActivity {
 
     private static final String TAG = "FlagsOfEurope";
     private ImageView flag;
-    private Button answer1;
-    private Button answer2;
-    private Button answer3;
-    private Button answer4;
-    private Button answer5;
-    private Button answer6;
+    private ImageView returnArr;
+    private Button answer1, answer2, answer3, answer4, answer5, answer6, correctBtn;
+    private Button nextQ;
+    private String correctAnswer;
+    private TextView correctTxt;
     private TextView contName;
     private TextView question;
-    private Integer questionnumber;
+    private int questionnumber;
+    private int numberOfCorrect;
+    private boolean checkGenerate;
     private ArrayList<String> pngURL = new ArrayList<String>();
-    private ArrayList <String> nameArray = new ArrayList<>();
+    private ArrayList<String> nameArray = new ArrayList<>();
     private ArrayList<String> regions = new ArrayList<>();
     private ArrayList<String> answers = new ArrayList<>();
+    private ArrayList<String> tempAnswers = new ArrayList<>();
+    private ArrayList<Button> buttons = new ArrayList<>();
     private final String BASEURL = "https://restcountries.com/v3.1/region/";
 
     @Override
@@ -67,72 +72,77 @@ public class GuessTheFlagContinentActivity extends AppCompatActivity {
         answer5 = (Button) findViewById(R.id.answer5);
         answer6 = (Button) findViewById(R.id.answer6);
 
-        questionnumber = 1;
+        nextQ = (Button) findViewById(R.id.nextQuest);
 
+        buttons.add(answer1);
+        buttons.add(answer2);
+        buttons.add(answer3);
+        buttons.add(answer4);
+        buttons.add(answer5);
+        buttons.add(answer6);
+
+        correctTxt = (TextView) findViewById(R.id.correctTxt);
+
+        questionnumber = 1;
+        numberOfCorrect = 0;
+
+        checkGenerate = true;
 
         question = (TextView) findViewById(R.id.question);
 
-
+        returnArr = (ImageView) findViewById(R.id.returnArr);
 
         contName = (TextView) findViewById(R.id.continentName);
-        contName.setText("Guess the Flag - "+ regions.get(0) );
+        contName.setText("Guess the Flag - " + regions.get(0));
 
-        for (String region : regions){
+
+        returnArr.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), ReturnScreen.class);
+                intent.putExtra("class", getLocalClassName());
+                startActivity(intent);
+            }
+        });
+
+        for (String region : regions) {
             getFlags(BASEURL + region);
+        }
+
+        /*
+        if (regions.size() >= 2) {
+            getFlags(regions);
+        } else {
+            getFlags(regions.get(0));
+        }*/
+
+        for (Button button: buttons) {
+            button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (button.getText().equals(correctAnswer)){
+                        numberOfCorrect +=1;
+                        button.setBackgroundColor(getResources().getColor(R.color.green));
+
+                    } else {
+                        button.setBackgroundColor(getResources().getColor(R.color.red));
+                        correctBtn.setBackgroundColor(getResources().getColor(R.color.green));
+
+                    }
+                }
+            });
         }
 
 
 
-        answer1.setOnClickListener(new View.OnClickListener() {
+        nextQ.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 questionnumber +=1;
                 question.setText("Question "+questionnumber+"/"+nameArray.size());
-                renderImage();
-            }
-        });
-
-        answer2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                questionnumber +=1;
-                question.setText("Question "+questionnumber+"/"+nameArray.size());
-                renderImage();
-            }
-        });
-
-        answer3.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                questionnumber +=1;
-                question.setText("Question "+questionnumber+"/"+nameArray.size());
-                renderImage();
-            }
-        });
-
-        answer4.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                questionnumber +=1;
-                question.setText("Question "+questionnumber+"/"+nameArray.size());
-                renderImage();
-            }
-        });
-
-        answer5.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                questionnumber +=1;
-                question.setText("Question "+questionnumber+"/"+nameArray.size());
-                renderImage();
-            }
-        });
-
-        answer6.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                questionnumber +=1;
-                question.setText("Question "+questionnumber+"/"+nameArray.size());
+                correctTxt.setText("Correct: " + numberOfCorrect);
+                for (Button button : buttons) {
+                    button.setBackgroundColor(getResources().getColor(R.color.light_grey));
+                }
                 renderImage();
 
             }
@@ -150,7 +160,7 @@ public class GuessTheFlagContinentActivity extends AppCompatActivity {
                 StringBuilder msg = new StringBuilder();
                 HttpURLConnection urlConnection;
                 try {
-                    URL url = new URL(urlParam);
+                    URL url = new URL( urlParam);
                     urlConnection = (HttpURLConnection) url.openConnection();
                     InputStream in = new BufferedInputStream(urlConnection.getInputStream());
                     BufferedReader reader = new BufferedReader(new InputStreamReader(in));
@@ -165,6 +175,8 @@ public class GuessTheFlagContinentActivity extends AppCompatActivity {
                 handler.post(new Runnable() {
                     @Override
                     public void run() {
+                        //ArrayList<String> json = new ArrayList<>();
+                        //json.add(msg.toString());
                         parseJson(msg.toString());
                     }
                 });
@@ -172,11 +184,53 @@ public class GuessTheFlagContinentActivity extends AppCompatActivity {
         });
     }
 
+    /*
+    private void getFlags(ArrayList<String> urlParams) {
+        ArrayList<String> json = new ArrayList<>();
+        for (String urlParam : urlParams) {
+            Log.e("lmao", String.valueOf(urlParam));
+            ExecutorService executor = Executors.newSingleThreadExecutor();
+            Handler handler = new Handler(Looper.getMainLooper());
+            //Lopper.prepare()
+            executor.execute(new Runnable() {
+                @Override
+                public void run() {
+                    StringBuilder msg = new StringBuilder();
+                    HttpURLConnection urlConnection;
+                    try {
+                        URL url = new URL(BASEURL + urlParam);
+                        Log.wtf("URLS", String.valueOf(url));
+                        urlConnection = (HttpURLConnection) url.openConnection();
+                        InputStream in = new BufferedInputStream(urlConnection.getInputStream());
+                        BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+                        String line;
+                        while ((line = reader.readLine()) != null) {
+                            msg.append(line);
+                        }
+                    } catch (Exception e) {
+                        Log.v(TAG, e.toString());
+                    }
+
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            json.add(msg.toString());
+                        }
+                    });
+                }
+            });
+        }
+
+
+        Log.wtf("all json", String.valueOf(json));
+        parseJson(json);
+    }*/
+
 
     public void parseJson(String jsonString) {
 
         List<HashMap<String, String>> response = new ArrayList<>();
-        List<HashMap<String,String>> nameResponse = new ArrayList<>();
+        List<HashMap<String, String>> nameResponse = new ArrayList<>();
         //List<HashMap<String, String>> flagresp = new ArrayList<>();
         JSONArray jsonArray = null;
 
@@ -189,7 +243,6 @@ public class GuessTheFlagContinentActivity extends AppCompatActivity {
                 //Log.e(TAG, String.valueOf(jsonObject));
                 Iterator<?> iterator = flg.keys();
                 Iterator<?> nameIterator = names.keys();
-
 
 
                 HashMap<String, String> mapNames = new HashMap<>();
@@ -229,7 +282,7 @@ public class GuessTheFlagContinentActivity extends AppCompatActivity {
             }
         }
 
-
+        Log.e(TAG, String.valueOf(pngURL.size()));
 
         for (HashMap<String, String> _mapNames : nameResponse) {
             for (Map.Entry pair : _mapNames.entrySet()) {
@@ -238,34 +291,64 @@ public class GuessTheFlagContinentActivity extends AppCompatActivity {
                 }
             }
         }
-        question.setText("Question "+questionnumber+"/"+ nameArray.size());
-        //Log.e(TAG, String.valueOf(nameArray));
+        question.setText("Question " + questionnumber + "/" + nameArray.size());
+        correctTxt.setText("Correct: " + numberOfCorrect);
+        Log.e(TAG, String.valueOf(nameArray));
         renderImage();
     }
 
     private void renderImage() {
+
+        for (int i = 0; i < 6; i++) {
+            answers.add("placeholder");
+        }
         Integer randNr = new Random().nextInt(pngURL.size());
         String randomURL = pngURL.get(randNr);
-        String correctAnswer = nameArray.get(randNr);
-        //Log.e(TAG, correctAnswer);
-        Picasso.get().load(randomURL).into(flag);
         pngURL.remove(randomURL);
-
-        for(int i = 0; i<6; i++) {
-            answers.add("placeholder");
+        Picasso.get().load(randomURL).into(flag);
+        correctAnswer = nameArray.get(randNr);
+        nameArray.remove(nameArray.get(randNr));
+        for (int g = 0; g < nameArray.size(); g++) {
+            tempAnswers.add(nameArray.get(g));
         }
 
         answers.set(0, correctAnswer);
-        for( int f = 1; f< 6; f++) {
-            answers.set(f, nameArray.get(new Random().nextInt(nameArray.size())));
+
+
+        for (int f = 1; f < 6; f++) {
+            Integer rand = new Random().nextInt(tempAnswers.size());
+            answers.set(f, tempAnswers.get(rand));
+            //Log.e(TAG, String.valueOf(tempAnswers));
+            tempAnswers.remove(tempAnswers.get(rand));
+            //Log.v(TAG, String.valueOf(tempAnswers));
         }
+
+        for (int h = 0; h < tempAnswers.size(); h = 0) {
+            tempAnswers.remove(tempAnswers.get(h));
+        }
+
+
+        nameArray.add(correctAnswer);
         setButtonText();
 
         //Log.e(TAG, String.valueOf(answers));
     }
 
     private void setButtonText() {
-        Integer randNr = new Random().nextInt(answers.size());
+
+        for (Button button : buttons) {
+            Integer randNr = new Random().nextInt(answers.size());
+            if (answers.get(randNr).equals(correctAnswer)) {
+                correctBtn = button;
+            }
+            button.setText(answers.get(randNr));
+            answers.remove(answers.get(randNr));
+
+            button.setBackgroundColor(getResources().getColor(R.color.light_grey));
+        }
+
+
+        /*
         answer1.setText(answers.get(randNr));
         answers.remove(answer1.getText());
         randNr = new Random().nextInt(answers.size());
@@ -274,7 +357,6 @@ public class GuessTheFlagContinentActivity extends AppCompatActivity {
         randNr = new Random().nextInt(answers.size());
         answer3.setText(answers.get(randNr));
         answers.remove(answer3.getText());
-
         randNr = new Random().nextInt(answers.size());
         answer4.setText(answers.get(randNr));
         answers.remove(answer4.getText());
@@ -283,10 +365,22 @@ public class GuessTheFlagContinentActivity extends AppCompatActivity {
         answers.remove(answer5.getText());
         randNr = new Random().nextInt(answers.size());
         answer6.setText(answers.get(randNr));
-        answers.remove(answer6.getText());
+        answers.remove(answer6.getText()); */
 
     }
 
+    private void generateNewQuestion() {
+        try {
+            TimeUnit.SECONDS.sleep(2);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        questionnumber += 1;
+        question.setText("Question " + questionnumber + "/" + nameArray.size());
+        correctTxt.setText("Correct: " + numberOfCorrect);
+
+        renderImage();
+    }
 
 
 }

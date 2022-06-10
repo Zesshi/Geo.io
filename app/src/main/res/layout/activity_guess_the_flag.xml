@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#403F4C"
     tools:context=".GuessTheFlagActivity">
 
 
@@ -25,14 +24,12 @@
         android:layout_height="wrap_content"
         android:layout_row="0"
         android:layout_column="0"
-        android:layout_marginTop="84dp"
-        android:maxWidth="257dp"
-        android:maxHeight="165dp"
+        android:layout_marginTop="76dp"
         android:text="Guess the Flag - Classic"
         android:textColor="#EDEFFE"
-        android:textSize="19sp"
+        android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:ignore="MissingConstraints" />
@@ -69,26 +66,23 @@
     <ImageView
         android:id="@+id/flagImg"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
+        android:layout_height="85dp"
+        android:layout_marginTop="32dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView2"
+        app:layout_constraintTop_toBottomOf="@+id/textView"
         tools:ignore="MissingConstraints" />
 
     <Button
         android:id="@+id/button1"
         android:layout_width="135dp"
         android:layout_height="85dp"
-        android:layout_marginEnd="36dp"
-        android:backgroundTint="@color/light_grey"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="40dp"
         android:text=""
         app:iconTint="#5A5766"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/button2"
-        app:layout_constraintVertical_bias="0.0"
+        app:layout_constraintTop_toBottomOf="@+id/button3"
         tools:ignore="MissingConstraints" />
 
     <Button
@@ -96,8 +90,7 @@
         android:layout_width="135dp"
         android:layout_height="85dp"
         android:layout_marginStart="40dp"
-        android:layout_marginTop="12dp"
-        android:backgroundTint="@color/light_grey"
+        android:layout_marginTop="8dp"
         android:text=""
         app:iconTint="#5A5766"
         app:layout_constraintStart_toStartOf="parent"
@@ -108,22 +101,23 @@
         android:id="@+id/button3"
         android:layout_width="135dp"
         android:layout_height="85dp"
-        android:backgroundTint="@color/light_grey"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="40dp"
         android:text=""
         app:iconTint="#5A5766"
-        app:layout_constraintEnd_toEndOf="@+id/button1"
-        app:layout_constraintTop_toTopOf="@+id/button4"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/button5"
         tools:ignore="MissingConstraints" />
 
     <Button
         android:id="@+id/button4"
         android:layout_width="135dp"
         android:layout_height="85dp"
-        android:layout_marginTop="12dp"
-        android:backgroundTint="@color/light_grey"
+        android:layout_marginStart="40dp"
+        android:layout_marginTop="8dp"
         android:text=""
         app:iconTint="#5A5766"
-        app:layout_constraintStart_toStartOf="@+id/button2"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/button6"
         tools:ignore="MissingConstraints" />
 
@@ -131,23 +125,36 @@
         android:id="@+id/button5"
         android:layout_width="135dp"
         android:layout_height="85dp"
-        android:backgroundTint="@color/light_grey"
+        android:layout_marginTop="236dp"
+        android:layout_marginEnd="40dp"
         android:text=""
         app:iconTint="#5A5766"
-        app:layout_constraintEnd_toEndOf="@+id/button1"
-        app:layout_constraintTop_toTopOf="@+id/button6"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         tools:ignore="MissingConstraints" />
 
     <Button
         android:id="@+id/button6"
         android:layout_width="135dp"
         android:layout_height="85dp"
-        android:layout_marginTop="284dp"
-        android:backgroundTint="@color/light_grey"
+        android:layout_marginStart="40dp"
+        android:layout_marginTop="236dp"
         android:text=""
         app:iconTint="#5A5766"
-        app:layout_constraintStart_toStartOf="@+id/button2"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="MissingConstraints" />
+
+    <Button
+        android:id="@+id/next"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:backgroundTint="@color/light_grey"
+        android:text="Next Question"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/button2"
         tools:ignore="MissingConstraints" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
