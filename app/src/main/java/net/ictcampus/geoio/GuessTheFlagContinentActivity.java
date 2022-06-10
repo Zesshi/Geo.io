@@ -2,7 +2,12 @@ package net.ictcampus.geoio;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.nfc.Tag;
 import android.os.Bundle;
 import android.os.Handler;
@@ -12,6 +17,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
@@ -35,26 +41,24 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-public class GuessTheFlagContinentActivity extends AppCompatActivity {
+public class GuessTheFlagContinentActivity extends AppCompatActivity implements SensorEventListener {
 
     private static final String TAG = "FlagsOfEurope";
-    private ImageView flag;
-    private ImageView returnArr;
-    private Button answer1, answer2, answer3, answer4, answer5, answer6, correctBtn;
-    private Button nextQ;
+    private ImageView flag, returnArr;
+    private Button answer1, answer2, answer3, answer4, answer5, answer6, correctBtn, nextQ;
     private String correctAnswer;
-    private TextView correctTxt;
-    private TextView contName;
-    private TextView question;
-    private int questionnumber;
-    private int numberOfCorrect;
-    private boolean checkGenerate;
+    private TextView correctTxt, contName, question;
+    private SensorManager sensorManager;
+    private Sensor sensor;
+    private int questionnumber, numberOfCorrect, skippedQuestions, answeredQuestions;
+    private float currentX, currentY, currentZ, lastX, lastY, lastZ, xDifference, yDifference, zDiffernece, shakeThreshold = 10f, maxThresHold = 16f;
     private ArrayList<String> pngURL = new ArrayList<String>();
     private ArrayList<String> nameArray = new ArrayList<>();
     private ArrayList<String> regions = new ArrayList<>();
     private ArrayList<String> answers = new ArrayList<>();
     private ArrayList<String> tempAnswers = new ArrayList<>();
     private ArrayList<Button> buttons = new ArrayList<>();
+    private boolean isAccelerometerAvailable, notFirstTime = false, clickAllowed = true;
     private final String BASEURL = "https://restcountries.com/v3.1/region/";
 
     @Override
@@ -81,12 +85,14 @@ public class GuessTheFlagContinentActivity extends AppCompatActivity {
         buttons.add(answer5);
         buttons.add(answer6);
 
+        sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+
         correctTxt = (TextView) findViewById(R.id.correctTxt);
 
         questionnumber = 1;
         numberOfCorrect = 0;
-
-        checkGenerate = true;
+        skippedQuestions = 0;
+        answeredQuestions = 0;
 
         question = (TextView) findViewById(R.id.question);
 
@@ -94,6 +100,13 @@ public class GuessTheFlagContinentActivity extends AppCompatActivity {
 
         contName = (TextView) findViewById(R.id.continentName);
         contName.setText("Guess the Flag - " + regions.get(0));
+
+        if (sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER) != null) {
+            sensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+            isAccelerometerAvailable = true;
+        } else {
+            isAccelerometerAvailable = false;
+        }
 
 
         returnArr.setOnClickListener(new View.OnClickListener() {
@@ -115,30 +128,36 @@ public class GuessTheFlagContinentActivity extends AppCompatActivity {
             getFlags(regions.get(0));
         }*/
 
-        for (Button button: buttons) {
+        for (Button button : buttons) {
             button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (button.getText().equals(correctAnswer)){
-                        numberOfCorrect +=1;
-                        button.setBackgroundColor(getResources().getColor(R.color.green));
+                    if (clickAllowed) {
+                        clickAllowed = false;
+                        if (button.getText().equals(correctAnswer)) {
+                            numberOfCorrect += 1;
+                            button.setBackgroundColor(getResources().getColor(R.color.green));
 
-                    } else {
-                        button.setBackgroundColor(getResources().getColor(R.color.red));
-                        correctBtn.setBackgroundColor(getResources().getColor(R.color.green));
+                        } else {
+                            button.setBackgroundColor(getResources().getColor(R.color.red));
+                            correctBtn.setBackgroundColor(getResources().getColor(R.color.green));
+
+                        }
+                        questionnumber += 1;
+                        answeredQuestions += 1;
 
                     }
+
                 }
             });
         }
 
 
-
         nextQ.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                questionnumber +=1;
-                question.setText("Question "+questionnumber+"/"+nameArray.size());
+
+                question.setText("Question " + questionnumber + "/" + nameArray.size());
                 correctTxt.setText("Correct: " + numberOfCorrect);
                 for (Button button : buttons) {
                     button.setBackgroundColor(getResources().getColor(R.color.light_grey));
@@ -160,7 +179,7 @@ public class GuessTheFlagContinentActivity extends AppCompatActivity {
                 StringBuilder msg = new StringBuilder();
                 HttpURLConnection urlConnection;
                 try {
-                    URL url = new URL( urlParam);
+                    URL url = new URL(urlParam);
                     urlConnection = (HttpURLConnection) url.openConnection();
                     InputStream in = new BufferedInputStream(urlConnection.getInputStream());
                     BufferedReader reader = new BufferedReader(new InputStreamReader(in));
@@ -299,44 +318,61 @@ public class GuessTheFlagContinentActivity extends AppCompatActivity {
 
     private void renderImage() {
 
+        Log.e("SIIIZE", String.valueOf(nameArray.size() + 1));
+        Log.e("NR", String.valueOf(questionnumber));
+        if (questionnumber == (nameArray.size() + 1)) {
+            Intent resultScreen = new Intent(getApplicationContext(), ResultScreenActivity.class);
+            resultScreen.putExtra("correctAnswers", String.valueOf(numberOfCorrect));
+            resultScreen.putExtra("skipped", String.valueOf(skippedQuestions));
+            resultScreen.putExtra("numbOfQuestions", String.valueOf(answeredQuestions));
+            finish();
+            startActivity(resultScreen);
+        }
         for (int i = 0; i < 6; i++) {
             answers.add("placeholder");
         }
-        Integer randNr = new Random().nextInt(pngURL.size());
-        String randomURL = pngURL.get(randNr);
-        pngURL.remove(randomURL);
-        Picasso.get().load(randomURL).into(flag);
-        correctAnswer = nameArray.get(randNr);
-        nameArray.remove(nameArray.get(randNr));
-        for (int g = 0; g < nameArray.size(); g++) {
-            tempAnswers.add(nameArray.get(g));
+
+        clickAllowed = true;
+
+
+        if (pngURL.size() != 0) {
+            Integer randNr = new Random().nextInt(pngURL.size());
+
+            String randomURL = pngURL.get(randNr);
+            pngURL.remove(randomURL);
+            Picasso.get().load(randomURL).into(flag);
+            correctAnswer = nameArray.get(randNr);
+            nameArray.remove(nameArray.get(randNr));
+            for (int g = 0; g < nameArray.size(); g++) {
+                tempAnswers.add(nameArray.get(g));
+            }
+
+            answers.set(0, correctAnswer);
+
+
+            for (int f = 1; f < 6; f++) {
+                Integer rand = new Random().nextInt(tempAnswers.size());
+                answers.set(f, tempAnswers.get(rand));
+                //Log.e(TAG, String.valueOf(tempAnswers));
+                tempAnswers.remove(tempAnswers.get(rand));
+                //Log.v(TAG, String.valueOf(tempAnswers));
+            }
+
+            for (int h = 0; h < tempAnswers.size(); h = 0) {
+                tempAnswers.remove(tempAnswers.get(h));
+            }
+
+
+            nameArray.add(correctAnswer);
+            setButtonText();
         }
-
-        answers.set(0, correctAnswer);
-
-
-        for (int f = 1; f < 6; f++) {
-            Integer rand = new Random().nextInt(tempAnswers.size());
-            answers.set(f, tempAnswers.get(rand));
-            //Log.e(TAG, String.valueOf(tempAnswers));
-            tempAnswers.remove(tempAnswers.get(rand));
-            //Log.v(TAG, String.valueOf(tempAnswers));
-        }
-
-        for (int h = 0; h < tempAnswers.size(); h = 0) {
-            tempAnswers.remove(tempAnswers.get(h));
-        }
-
-
-        nameArray.add(correctAnswer);
-        setButtonText();
-
         //Log.e(TAG, String.valueOf(answers));
     }
 
     private void setButtonText() {
 
         for (Button button : buttons) {
+            button.setBackgroundColor(getResources().getColor(R.color.light_grey));
             Integer randNr = new Random().nextInt(answers.size());
             if (answers.get(randNr).equals(correctAnswer)) {
                 correctBtn = button;
@@ -344,43 +380,59 @@ public class GuessTheFlagContinentActivity extends AppCompatActivity {
             button.setText(answers.get(randNr));
             answers.remove(answers.get(randNr));
 
-            button.setBackgroundColor(getResources().getColor(R.color.light_grey));
+
         }
 
 
-        /*
-        answer1.setText(answers.get(randNr));
-        answers.remove(answer1.getText());
-        randNr = new Random().nextInt(answers.size());
-        answer2.setText(answers.get(randNr));
-        answers.remove(answer2.getText());
-        randNr = new Random().nextInt(answers.size());
-        answer3.setText(answers.get(randNr));
-        answers.remove(answer3.getText());
-        randNr = new Random().nextInt(answers.size());
-        answer4.setText(answers.get(randNr));
-        answers.remove(answer4.getText());
-        randNr = new Random().nextInt(answers.size());
-        answer5.setText(answers.get(randNr));
-        answers.remove(answer5.getText());
-        randNr = new Random().nextInt(answers.size());
-        answer6.setText(answers.get(randNr));
-        answers.remove(answer6.getText()); */
-
     }
 
-    private void generateNewQuestion() {
-        try {
-            TimeUnit.SECONDS.sleep(2);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+
+    @Override
+    public void onSensorChanged(SensorEvent sensorEvent) {
+        currentX = sensorEvent.values[0];
+        currentY = sensorEvent.values[1];
+        currentZ = sensorEvent.values[2];
+
+        if (notFirstTime) {
+            xDifference = Math.abs(lastX - currentX);
+            yDifference = Math.abs(lastY - currentY);
+            zDiffernece = Math.abs(lastZ - currentZ);
+
+            if (((xDifference > shakeThreshold && xDifference < maxThresHold) && (yDifference > shakeThreshold && yDifference < maxThresHold)) ||
+                    (xDifference > shakeThreshold && xDifference < maxThresHold) && (zDiffernece > shakeThreshold && zDiffernece < maxThresHold) ||
+                    (yDifference > shakeThreshold && yDifference < maxThresHold) && (zDiffernece > shakeThreshold && zDiffernece < maxThresHold)) {
+                skippedQuestions += 1;
+                renderImage();
+                questionnumber += 1;
+                question.setText("Question " + questionnumber + "/" + nameArray.size());
+                Toast.makeText(getApplicationContext(), "Skipped Question", Toast.LENGTH_SHORT).show();
+            }
         }
-        questionnumber += 1;
-        question.setText("Question " + questionnumber + "/" + nameArray.size());
-        correctTxt.setText("Correct: " + numberOfCorrect);
-
-        renderImage();
+        lastX = currentX;
+        lastY = currentY;
+        lastZ = currentZ;
+        notFirstTime = true;
     }
 
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (isAccelerometerAvailable) {
+            sensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL);
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (isAccelerometerAvailable) {
+            sensorManager.unregisterListener(this);
+        }
+    }
 
 }
