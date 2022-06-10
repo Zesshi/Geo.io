@@ -167,7 +167,7 @@ public class GuessTheCapital extends AppCompatActivity {
 
         ArrayList<String> answers = new ArrayList<String>();
         for (int i = 0; i < 6; i++) {
-            answers.add("placeholder");
+            answers.add("x");
         }
 
 
