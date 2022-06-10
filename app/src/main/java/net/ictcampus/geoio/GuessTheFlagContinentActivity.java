@@ -1,7 +1,9 @@
 package net.ictcampus.geoio;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.hardware.Sensor;
@@ -51,7 +53,7 @@ public class GuessTheFlagContinentActivity extends AppCompatActivity implements 
     private SensorManager sensorManager;
     private Sensor sensor;
     private int questionnumber, numberOfCorrect, skippedQuestions, answeredQuestions;
-    private float currentX, currentY, currentZ, lastX, lastY, lastZ, xDifference, yDifference, zDiffernece, shakeThreshold = 10f, maxThresHold = 16f;
+    private float currentX, currentY, currentZ, lastX, lastY, lastZ, xDifference, yDifference, zDiffernece, shakeThreshold = 12f;
     private ArrayList<String> pngURL = new ArrayList<String>();
     private ArrayList<String> nameArray = new ArrayList<>();
     private ArrayList<String> regions = new ArrayList<>();
@@ -61,10 +63,15 @@ public class GuessTheFlagContinentActivity extends AppCompatActivity implements 
     private boolean isAccelerometerAvailable, notFirstTime = false, clickAllowed = true;
     private final String BASEURL = "https://restcountries.com/v3.1/region/";
 
+    private AlertDialog.Builder dialogBuilder;
+    private Dialog dialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_guess_the_flag_continent);
+
+        Toast.makeText(getApplicationContext(), "Shake phone to skip question!", Toast.LENGTH_SHORT).show();
 
         flag = (ImageView) findViewById(R.id.europeFlags);
         regions = getIntent().getStringArrayListExtra("regions");
@@ -111,9 +118,7 @@ public class GuessTheFlagContinentActivity extends AppCompatActivity implements 
 
         returnArr.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), ReturnScreen.class);
-                intent.putExtra("class", getLocalClassName());
-                startActivity(intent);
+                showPupUp();
             }
         });
 
@@ -143,8 +148,9 @@ public class GuessTheFlagContinentActivity extends AppCompatActivity implements 
                             correctBtn.setBackgroundColor(getResources().getColor(R.color.green));
 
                         }
-                        questionnumber += 1;
                         answeredQuestions += 1;
+                        correctTxt.setText("Correct: " + numberOfCorrect);
+
 
                     }
 
@@ -156,9 +162,9 @@ public class GuessTheFlagContinentActivity extends AppCompatActivity implements 
         nextQ.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                questionnumber += 1;
                 question.setText("Question " + questionnumber + "/" + nameArray.size());
-                correctTxt.setText("Correct: " + numberOfCorrect);
+
                 for (Button button : buttons) {
                     button.setBackgroundColor(getResources().getColor(R.color.light_grey));
                 }
@@ -382,6 +388,8 @@ public class GuessTheFlagContinentActivity extends AppCompatActivity implements 
 
 
         }
+        question.setText("Question " + questionnumber + "/" + nameArray.size());
+        correctTxt.setText("Correct: " + numberOfCorrect);
 
 
     }
@@ -398,14 +406,18 @@ public class GuessTheFlagContinentActivity extends AppCompatActivity implements 
             yDifference = Math.abs(lastY - currentY);
             zDiffernece = Math.abs(lastZ - currentZ);
 
-            if (((xDifference > shakeThreshold && xDifference < maxThresHold) && (yDifference > shakeThreshold && yDifference < maxThresHold)) ||
-                    (xDifference > shakeThreshold && xDifference < maxThresHold) && (zDiffernece > shakeThreshold && zDiffernece < maxThresHold) ||
-                    (yDifference > shakeThreshold && yDifference < maxThresHold) && (zDiffernece > shakeThreshold && zDiffernece < maxThresHold)) {
-                skippedQuestions += 1;
-                renderImage();
-                questionnumber += 1;
-                question.setText("Question " + questionnumber + "/" + nameArray.size());
-                Toast.makeText(getApplicationContext(), "Skipped Question", Toast.LENGTH_SHORT).show();
+            if ((xDifference > shakeThreshold  && yDifference > shakeThreshold ) ||
+                    (xDifference > shakeThreshold  && zDiffernece > shakeThreshold ) ||
+                    (yDifference > shakeThreshold && zDiffernece > shakeThreshold )) {
+                if (clickAllowed) {
+                    clickAllowed = false;
+                    Toast.makeText(getApplicationContext(), "Skipped Question", Toast.LENGTH_SHORT).show();
+                    correctBtn.setBackgroundColor(getResources().getColor(R.color.green));
+                    skippedQuestions += 1;
+                    //questionnumber += 1;
+                }
+
+
             }
         }
         lastX = currentX;
@@ -434,5 +446,34 @@ public class GuessTheFlagContinentActivity extends AppCompatActivity implements 
             sensorManager.unregisterListener(this);
         }
     }
+
+    private void showPupUp() {
+        dialogBuilder = new AlertDialog.Builder(this);
+        final View popUp = getLayoutInflater().inflate(R.layout.activity_return_screen, null);
+        dialogBuilder.setView(popUp);
+        dialog = dialogBuilder.create();
+        dialog.show();
+
+        Button keepbutton = (Button) popUp.findViewById(R.id.keepButton);
+        keepbutton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        Button quitButton = (Button) popUp.findViewById(R.id.quitButton);
+        quitButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent menu = new Intent(getApplicationContext(), MainActivity.class);
+                startActivity(menu);
+            }
+        });
+    }
+
+
+
+
 
 }
