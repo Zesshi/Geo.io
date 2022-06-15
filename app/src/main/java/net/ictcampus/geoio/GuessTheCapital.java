@@ -6,6 +6,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.Typeface;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.nfc.Tag;
 import android.os.Bundle;
 import android.os.Handler;
@@ -16,6 +22,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
@@ -38,7 +45,7 @@ import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class GuessTheCapital extends AppCompatActivity {
+public class GuessTheCapital extends AppCompatActivity implements SensorEventListener {
 
     private static final String TAG = "Capitals";
     private TextView capitals, textView_cap2, correct;
@@ -47,8 +54,10 @@ public class GuessTheCapital extends AppCompatActivity {
     private final String BASEURL = "https://restcountries.com/v3.1/all";
 
     private boolean isAccelerometerSensorAvailable, notFirstTime = false, isClickAllowed = true;
-
+    private SensorManager sensorManager;
+    private Sensor sensor;
     List<JSONArray> response = new ArrayList<>();
+    private float currentX, currentY, currentZ, lastX, lastY, lastZ, xDifference, yDifference, zDifference, shakeThreshold = 12f;
 
     private ArrayList<String> countries = new ArrayList<String>();
     private ArrayList<String> Caps = new ArrayList<String>();
@@ -61,6 +70,7 @@ public class GuessTheCapital extends AppCompatActivity {
     private AlertDialog.Builder dialogBuilder;
     private Dialog dialog;
     private Intent intent;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,6 +122,7 @@ public class GuessTheCapital extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 questionNumber += 1;
+
                 textView_cap2.setText("Question " + questionNumber + "/" + numberOfQuestionsInt);
                 renderGame();
             }
@@ -201,8 +212,9 @@ public class GuessTheCapital extends AppCompatActivity {
         Integer index = new Random().nextInt(response.size());
         JSONArray randomNum = response.get(index);
         response.remove(response.get(index));
-        capitals.setText((randomNum).toString() .replace("[", "").replace("]", "").replace("\"", "").trim());
-capitals.setText("kek");
+        capitals.setTypeface(capitals.getTypeface(), Typeface.BOLD_ITALIC);
+        capitals.setText((randomNum).toString().replace("[", "").replace("]", "").replace("\"", "").trim());
+
         country = countries.get(index);
         countries.remove(countries.get(index));
         answers.set(0, country);
@@ -320,6 +332,55 @@ capitals.setText("kek");
         textView_cap2.setText("Question " + questionNumber + "/" + numberOfQuestionsInt);
         correct.setText("Correct: " + rightAnswer);
         renderGame();
+    }
+
+    public void onSensorChanged(SensorEvent sensorEvent) {
+        currentX = sensorEvent.values[0];
+        currentY = sensorEvent.values[1];
+        currentZ = sensorEvent.values[2];
+
+        if (notFirstTime) {
+            xDifference = Math.abs(lastX - currentX);
+            yDifference = Math.abs(lastY - currentY);
+            zDifference = Math.abs(lastZ - currentZ);
+
+            if ((xDifference > shakeThreshold && yDifference > shakeThreshold) ||
+                    (xDifference > shakeThreshold && zDifference > shakeThreshold) ||
+                    (yDifference > shakeThreshold && zDifference > shakeThreshold)) {
+                if (isClickAllowed) {
+                    isClickAllowed = false;
+                    showSolution(correctButton);
+                    Toast.makeText(getApplicationContext(), "Skipped Question", Toast.LENGTH_SHORT).show();
+                }
+            }
+        }
+
+        lastX = currentX;
+        lastY = currentY;
+        lastZ = currentZ;
+        notFirstTime = true;
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int i) {
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if (isAccelerometerSensorAvailable) {
+            sensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL);
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (isAccelerometerSensorAvailable) {
+            sensorManager.unregisterListener(this);
+        }
     }
 }
 
