@@ -32,6 +32,7 @@ import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.lang.reflect.Array;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
@@ -57,7 +58,9 @@ public class GuessTheFlagActivity extends AppCompatActivity implements SensorEve
 
     private Button button1, button2, button3, button4, button5, button6, nextButton, correctButton;
 
-    private ArrayList<String> countries = new ArrayList<String>();
+    private ArrayList<String> countriesEng = new ArrayList<String>();
+    private ArrayList<String> countriesDeu = new ArrayList<>();
+    private ArrayList<String> countries = new ArrayList<>();
     private ArrayList<String> pngURL = new ArrayList<String>();
     private ArrayList<String> answers = new ArrayList<String>();
     private ArrayList<Button> buttons = new ArrayList<Button>();
@@ -66,7 +69,7 @@ public class GuessTheFlagActivity extends AppCompatActivity implements SensorEve
 
     private float currentX, currentY, currentZ, lastX, lastY, lastZ, xDifference, yDifference, zDifference, shakeThreshold = 12f;
 
-    private String country, numberOfQuestions;
+    private String country, numberOfQuestions, language;
 
     private boolean isAccelerometerSensorAvailable, notFirstTime = false, isClickAllowed = true;
 
@@ -103,7 +106,7 @@ public class GuessTheFlagActivity extends AppCompatActivity implements SensorEve
         realQuestionNumber = 0;
         intent = getIntent();
         numberOfQuestions = intent.getStringExtra("numberOfQuestions");
-        Log.wtf("numberOfQuestions", String.valueOf(numberOfQuestions));
+        language = intent.getStringExtra("language");
 
         if (sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER) != null) {
             sensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
@@ -121,9 +124,11 @@ public class GuessTheFlagActivity extends AppCompatActivity implements SensorEve
         nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                questionNumber += 1;
-                textView2.setText("Question " + questionNumber + "/" + numberOfQuestionsInt);
-                renderGame();
+                if (!isClickAllowed) {
+                    questionNumber += 1;
+                    textView2.setText("Question " + questionNumber + "/" + numberOfQuestionsInt);
+                    renderGame();
+                }
             }
         });
 
@@ -143,7 +148,6 @@ public class GuessTheFlagActivity extends AppCompatActivity implements SensorEve
                 }
             });
         }
-
         getJson("https://restcountries.com/v3.1/all");
     }
 
@@ -182,9 +186,11 @@ public class GuessTheFlagActivity extends AppCompatActivity implements SensorEve
     }
 
     private void renderGame() {
+
         for (Button button : buttons) {
             button.setBackgroundColor(getResources().getColor(R.color.light_grey));
         }
+
         isClickAllowed = true;
         if (questionNumber == (numberOfQuestionsInt + 1)) {
             Intent intent = new Intent(getApplicationContext(), ResultScreenActivity.class);
@@ -201,21 +207,33 @@ public class GuessTheFlagActivity extends AppCompatActivity implements SensorEve
 
         Integer index = new Random().nextInt(pngURL.size());
         String randomURL = pngURL.get(index);
-        pngURL.remove(pngURL.get(index));
+        pngURL.remove(randomURL);
         Picasso.get().load(randomURL).into(flagImg);
-
         country = countries.get(index);
         countries.remove(countries.get(index));
+
+        ArrayList<String> temp = new ArrayList<>();
+
+        for (int i = 0; i < countries.size(); i++) {
+            temp.add(countries.get(i));
+        }
+
+        countries.add(country);
+
         answers.set(0, country);
 
         for (int i = 1; i < 6; i++) {
-            Integer random = new Random().nextInt(countries.size());
-            answers.set(i, countries.get(random));
+            int random = new Random().nextInt(temp.size());
+            answers.set(i, temp.get(random));
+            temp.remove(temp.get(random));
         }
-        countries.add(country);
+
+        for (int i = 0; i < temp.size(); i++) {
+            temp.remove(0);
+        }
 
         for (Button button : buttons) {
-            Integer random = new Random().nextInt(answers.size());
+            int random = new Random().nextInt(answers.size());
             if (answers.get(random).equals(country)) {
                 correctButton = button;
             }
@@ -310,7 +328,8 @@ public class GuessTheFlagActivity extends AppCompatActivity implements SensorEve
 
     public void parseJson(String jsonString) {
         List<HashMap<String, String>> responseImg = new ArrayList<>();
-        List<HashMap<String, String>> responseName = new ArrayList<>();
+        List<HashMap<String, String>> responseEng = new ArrayList<>();
+        List<HashMap<String, String>> responseDeu = new ArrayList<>();
         JSONArray jsonArray = null;
         try {
             jsonArray = new JSONArray(jsonString);
@@ -318,10 +337,13 @@ public class GuessTheFlagActivity extends AppCompatActivity implements SensorEve
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
                 JSONObject flg = jsonObject.getJSONObject("flags");
                 JSONObject name = jsonObject.getJSONObject("name");
+                JSONObject deuName = jsonObject.getJSONObject("translations");
                 Iterator<?> iteratorFlg = flg.keys();
-                Iterator<?> iteratorName = name.keys();
+                Iterator<?> iteratorNameEng = name.keys();
+                Iterator<?> iteratorNameDeu = deuName.keys();
                 HashMap<String, String> mapFlg = new HashMap<>();
-                HashMap<String, String> mapName = new HashMap<>();
+                HashMap<String, String> mapNameEng = new HashMap<>();
+                HashMap<String, String> mapNameDeu = new HashMap<>();
 
                 while (iteratorFlg.hasNext()) {
                     Object key = iteratorFlg.next();
@@ -329,18 +351,33 @@ public class GuessTheFlagActivity extends AppCompatActivity implements SensorEve
                     mapFlg.put(key.toString(), value.toString());
                 }
 
-                while (iteratorName.hasNext()) {
-                    Object key = iteratorName.next();
+                while (iteratorNameEng.hasNext()) {
+                    Object key = iteratorNameEng.next();
                     Object value = name.get(key.toString());
-                    mapName.put(key.toString(), value.toString());
+                    mapNameEng.put(key.toString(), value.toString());
                 }
 
+                while (iteratorNameDeu.hasNext()) {
+                    String key = (String) iteratorNameDeu.next();
+                    JSONObject value = (JSONObject) deuName.get(key.toString());
+                    if (key.equals("deu")) {
+                        String subObj = (String) value.get("common");
+                        countriesDeu.add(subObj);
+                    }
+                }
+
+
+
+
                 responseImg.add(mapFlg);
-                responseName.add(mapName);
+                responseEng.add(mapNameEng);
+                responseDeu.add(mapNameDeu);
+
             }
         } catch (JSONException e) {
             e.printStackTrace();
         }
+
         for (HashMap<String, String> _map : responseImg) {
             for (Map.Entry pair : _map.entrySet()) {
                 if (pair.getKey().equals("png")) {
@@ -349,13 +386,31 @@ public class GuessTheFlagActivity extends AppCompatActivity implements SensorEve
             }
         }
 
-        for (HashMap<String, String> _map2 : responseName) {
+        for (HashMap<String, String> _map2 : responseEng) {
             for (Map.Entry pair : _map2.entrySet()) {
                 if (pair.getKey().equals("common")) {
-                    countries.add(String.valueOf(pair.getValue()));
+                    countriesEng.add(String.valueOf(pair.getValue()));
                 }
             }
         }
+
+        for (HashMap<String, String> _map3 : responseDeu) {
+            for (Map.Entry pair : _map3.entrySet()) {
+                if (pair.getKey().equals("deu")) {
+                    countriesDeu.add(String.valueOf(pair.getValue()));
+                }
+            }
+        }
+
+        textView2.setText("Question " + questionNumber + "/" + numberOfQuestionsInt);
+        correct.setText("Correct: " + rightAnswer);
+
+        if (language.equals("German")) {
+            countries = countriesDeu;
+        } else if(language.equals("English")) {
+            countries = countriesEng;
+        }
+
 
         if (numberOfQuestions.equals("max")) {
             numberOfQuestionsInt = countries.size();
@@ -363,8 +418,6 @@ public class GuessTheFlagActivity extends AppCompatActivity implements SensorEve
             numberOfQuestionsInt = Integer.valueOf(numberOfQuestions);
         }
 
-        textView2.setText("Question " + questionNumber + "/" + numberOfQuestionsInt);
-        correct.setText("Correct: " + rightAnswer);
         renderGame();
     }
 }

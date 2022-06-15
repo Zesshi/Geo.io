@@ -5,4 +5,9 @@
     <string name="capital"></string>
     <string name="question_40_256">Question 40/256</string>
     <string name="guess_the_country_by_it_s_capital">Guess the Country by it\'s Capital</string>
+
+    <string-array name="languages_array">
+        <item>English</item>
+        <item>German</item>
+    </string-array>
 </resources>
