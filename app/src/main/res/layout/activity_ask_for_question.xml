@@ -12,46 +12,51 @@
         android:layout_height="wrap_content"
         android:text="" />
 
-    <Button
-        android:id="@+id/buttonAll"
-        android:layout_width="266dp"
-        android:layout_height="48dp"
-        android:layout_marginTop="16dp"
-        android:text="All"
+    <TextView
+        android:id="@+id/questitionText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:text="How many Questions you want to answer?"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.51"
+        app:layout_constraintHorizontal_bias="0.489"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/buttonSubmit" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/buttonSubmit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="56dp"
-        android:layout_marginEnd="72dp"
+        android:layout_marginTop="48dp"
+        android:layout_marginEnd="68dp"
         android:text="Submit"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/questitionText" />
 
-    <TextView
-        android:id="@+id/questitionText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="232dp"
-        android:text="How many Questions you want to answer?"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.496"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <EditText
         android:id="@+id/inputNumber"
-        android:layout_width="161dp"
-        android:layout_height="39dp"
-        android:layout_marginStart="72dp"
-        android:layout_marginTop="64dp"
+        android:layout_width="112dp"
+        android:layout_height="35dp"
+        android:layout_marginStart="68dp"
+        android:layout_marginTop="60dp"
         android:inputType="number"
         android:text=""
+        app:layout_constraintEnd_toStartOf="@+id/buttonSubmit"
+        app:layout_constraintHorizontal_bias="0.386"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/questitionText" />
+
+    <Button
+        android:id="@+id/buttonAll"
+        android:layout_width="266dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="24dp"
+        android:text="All"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.531"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/buttonSubmit"
+        app:layout_constraintVertical_bias="0.0" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
