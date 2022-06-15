@@ -84,7 +84,7 @@
         android:layout_width="135dp"
         android:layout_height="65dp"
         android:layout_marginTop="24dp"
-        android:text="Oceania / Antarctica"
+        android:text="Oceania / Antarctic"
         app:layout_constraintEnd_toEndOf="parent"
         android:backgroundTint="@color/light_grey"
         app:layout_constraintStart_toStartOf="parent"

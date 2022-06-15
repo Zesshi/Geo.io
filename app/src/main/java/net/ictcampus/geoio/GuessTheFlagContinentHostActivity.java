@@ -73,8 +73,8 @@ public class GuessTheFlagContinentHostActivity extends AppCompatActivity {
         oceania.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 regions.add("oceania");
-                regions.add("arctic");
-                regions.add("antarctic");
+                //regions.add("arctic");
+                //regions.add("antarctic");
                 showPopUp();
 
 

@@ -31,6 +31,7 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -46,7 +47,7 @@ public class GuessTheFlagContinentActivity extends AppCompatActivity implements 
     private static final String TAG = "FlagsOfEurope";
     private ImageView flag, returnArr;
     private Button answer1, answer2, answer3, answer4, answer5, answer6, correctBtn, nextQ;
-    private String correctAnswer;
+    private String correctAnswer, combined;
     private TextView correctTxt, contName, question;
     private SensorManager sensorManager;
     private Sensor sensor;
@@ -63,6 +64,7 @@ public class GuessTheFlagContinentActivity extends AppCompatActivity implements 
     private ArrayList<String> answers = new ArrayList<>();
     private ArrayList<String> tempAnswers = new ArrayList<>();
     private ArrayList<Button> buttons = new ArrayList<>();
+     private ArrayList<String> json = new ArrayList<>();
     private boolean isAccelerometerAvailable, notFirstTime = false, clickAllowed = true;
     private final String BASEURL = "https://restcountries.com/v3.1/region/";
 
@@ -107,8 +109,6 @@ public class GuessTheFlagContinentActivity extends AppCompatActivity implements 
 
         intent = getIntent();
         numberOfQuestions = intent.getStringExtra("numberOfQuestions");
-        Log.e("NUMB", numberOfQuestions);
-        Log.e("REG", String.valueOf(regions));
 
         question = (TextView) findViewById(R.id.question);
 
@@ -132,8 +132,12 @@ public class GuessTheFlagContinentActivity extends AppCompatActivity implements 
         });
 
         for (String region : regions) {
+            getAntarctica();
             getFlags(BASEURL + region);
         }
+
+
+
 
         /*
         if (regions.size() >= 2) {
@@ -185,7 +189,37 @@ public class GuessTheFlagContinentActivity extends AppCompatActivity implements 
 
     }
 
+    private void getAntarctica() {
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        Handler handler = new Handler(Looper.getMainLooper());
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                StringBuilder msg = new StringBuilder();
+                HttpURLConnection urlConnection;
+                try {
+                    URL url = new URL(BASEURL+"antarctic");
+                    urlConnection = (HttpURLConnection) url.openConnection();
+                    InputStream in = new BufferedInputStream(urlConnection.getInputStream());
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+                    String line;
+                    while ((line = reader.readLine()) != null) {
+                        msg.append(line);
+                    }
+                } catch (Exception e) {
+                    Log.v(TAG, e.toString());
+                }
+                combined = msg.toString();
+
+            }
+        });
+    }
+
     private void getFlags(String urlParam) {
+        Log.e("sdfgh", String.valueOf(regions.get(0)));
+
+
+
         ExecutorService executor = Executors.newSingleThreadExecutor();
         Handler handler = new Handler(Looper.getMainLooper());
         executor.execute(new Runnable() {
@@ -209,23 +243,30 @@ public class GuessTheFlagContinentActivity extends AppCompatActivity implements 
                 handler.post(new Runnable() {
                     @Override
                     public void run() {
-                        //ArrayList<String> json = new ArrayList<>();
-                        //json.add(msg.toString());
-                        parseJson(msg.toString());
+                        if (regions.get(0).equals("oceania")) {
+                            String yeye = (combined.substring(0,combined.length()-1 ))+"," + msg.toString().substring(1) ;
+                            Log.e(TAG, yeye);
+                            parseJson(yeye);
+                        } else {
+                            parseJson(msg.toString());
+                        }
+
+
                     }
                 });
             }
         });
     }
 
+
     /*
-    private void getFlags(ArrayList<String> urlParams) {
-        ArrayList<String> json = new ArrayList<>();
+    private void getMultipleCont(ArrayList<String> urlParams) {
+
+        Log.e(TAG, String.valueOf(urlParams));
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        Handler handler = new Handler(Looper.getMainLooper());
         for (String urlParam : urlParams) {
-            Log.e("lmao", String.valueOf(urlParam));
-            ExecutorService executor = Executors.newSingleThreadExecutor();
-            Handler handler = new Handler(Looper.getMainLooper());
-            //Lopper.prepare()
+            Log.e("YEYEY", String.valueOf(urlParam));
             executor.execute(new Runnable() {
                 @Override
                 public void run() {
@@ -233,13 +274,14 @@ public class GuessTheFlagContinentActivity extends AppCompatActivity implements 
                     HttpURLConnection urlConnection;
                     try {
                         URL url = new URL(BASEURL + urlParam);
-                        Log.wtf("URLS", String.valueOf(url));
+                        Log.e("Here is the URL", String.valueOf(url));
                         urlConnection = (HttpURLConnection) url.openConnection();
                         InputStream in = new BufferedInputStream(urlConnection.getInputStream());
                         BufferedReader reader = new BufferedReader(new InputStreamReader(in));
                         String line;
-                        while ((line = reader.readLine()) != null) {
+                        while ((line = reader.readLine())!= null) {
                             msg.append(line);
+                            Log.e(TAG, String.valueOf(msg));
                         }
                     } catch (Exception e) {
                         Log.v(TAG, e.toString());
@@ -249,16 +291,16 @@ public class GuessTheFlagContinentActivity extends AppCompatActivity implements 
                         @Override
                         public void run() {
                             json.add(msg.toString());
+                            Log.e("JSON HERE", String.valueOf(json));
                         }
                     });
                 }
             });
+
         }
+    } */
 
 
-        Log.wtf("all json", String.valueOf(json));
-        parseJson(json);
-    }*/
 
 
     public void parseJson(String jsonString) {
