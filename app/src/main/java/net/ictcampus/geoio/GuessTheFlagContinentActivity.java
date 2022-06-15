@@ -175,13 +175,17 @@ public class GuessTheFlagContinentActivity extends AppCompatActivity implements 
         nextQ.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                questionnumber += 1;
-                question.setText("Question " + questionnumber + "/" + numbOfQuestions);
+                if (!clickAllowed) {
+                    questionnumber += 1;
+                    question.setText("Question " + questionnumber + "/" + numbOfQuestions);
+                    renderImage();
+                }
+
 
                 for (Button button : buttons) {
                     button.setBackgroundColor(getResources().getColor(R.color.light_grey));
                 }
-                renderImage();
+
 
             }
         });
