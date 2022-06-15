@@ -426,7 +426,6 @@ public class GuessTheFlagContinentActivity extends AppCompatActivity implements 
                 tempAnswers.remove(tempAnswers.get(h));
             }
 
-
             nameArray.add(correctAnswer);
             setButtonText();
         }

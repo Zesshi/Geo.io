@@ -9,8 +9,10 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -18,6 +20,7 @@ public class MainActivity extends AppCompatActivity {
     private Dialog dialog;
     private String className;
     private Editable numberOfQuestions;
+    private Spinner spinner;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,8 +49,13 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 className = "GuessTheCapital";
                 showPopUp();
+
             }
         });
+
+        spinner = (Spinner) findViewById(R.id.spinner);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.languages_array, android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
     }
 
     private void showPopUp() {
@@ -66,10 +74,12 @@ public class MainActivity extends AppCompatActivity {
                 if (className.equals("GuessTheFlagActivity")) {
                     Intent intent = new Intent(getApplicationContext(), GuessTheFlagActivity.class);
                     intent.putExtra("numberOfQuestions", "max");
+                    intent.putExtra("language", spinner.getSelectedItem().toString());
                     startActivity(intent);
                 } else if (className.equals("GuessTheCapital")) {
                     Intent intent = new Intent(getApplicationContext(), GuessTheCapital.class);
                     intent.putExtra("numberOfQuestions", "max");
+                    intent.putExtra("language", spinner.getSelectedItem().toString());
                     startActivity(intent);
                 }
             }
@@ -85,10 +95,12 @@ public class MainActivity extends AppCompatActivity {
                 if (className.equals("GuessTheFlagActivity")) {
                     Intent intent = new Intent(getApplicationContext(), GuessTheFlagActivity.class);
                     intent.putExtra("numberOfQuestions", String.valueOf(numberOfQuestions));
+                    intent.putExtra("language", spinner.getSelectedItem().toString());
                     startActivity(intent);
                 } else if (className.equals("GuessTheCapital")) {
                     Intent intent = new Intent(getApplicationContext(), GuessTheCapital.class);
                     intent.putExtra("numberOfQuestions", String.valueOf(numberOfQuestions));
+                    intent.putExtra("language", spinner.getSelectedItem().toString());
                     startActivity(intent);
                 }
             }

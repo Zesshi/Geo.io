@@ -70,4 +70,11 @@
         app:srcCompat="@drawable/geologo"
         tools:srcCompat="@drawable/geologo" />
 
+    <Spinner
+        android:id="@+id/spinner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout_editor_absoluteX="347dp" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
