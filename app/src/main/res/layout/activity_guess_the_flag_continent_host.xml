@@ -13,6 +13,7 @@
         android:layout_marginTop="24dp"
         android:layout_marginEnd="40dp"
         android:text="Asia"
+        android:backgroundTint="@color/light_grey"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/africaBtn" />
 
@@ -52,6 +53,7 @@
         android:layout_marginStart="40dp"
         android:layout_marginTop="56dp"
         android:text="Europe"
+        android:backgroundTint="@color/light_grey"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView3" />
 
@@ -62,6 +64,7 @@
         android:layout_marginTop="56dp"
         android:layout_marginEnd="40dp"
         android:text="Africa"
+        android:backgroundTint="@color/light_grey"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView3" />
 
@@ -69,6 +72,7 @@
         android:id="@+id/americaBtn"
         android:layout_width="135dp"
         android:layout_height="65dp"
+        android:backgroundTint="@color/light_grey"
         android:layout_marginStart="40dp"
         android:layout_marginTop="24dp"
         android:text="North- / Southamerica"
@@ -82,6 +86,7 @@
         android:layout_marginTop="24dp"
         android:text="Oceania / Antarctica"
         app:layout_constraintEnd_toEndOf="parent"
+        android:backgroundTint="@color/light_grey"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/americaBtn" />
 </androidx.constraintlayout.widget.ConstraintLayout>

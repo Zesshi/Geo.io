@@ -10,7 +10,6 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.nfc.Tag;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -41,7 +40,6 @@ import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 
 public class GuessTheFlagContinentActivity extends AppCompatActivity implements SensorEventListener {
 
@@ -52,7 +50,12 @@ public class GuessTheFlagContinentActivity extends AppCompatActivity implements 
     private TextView correctTxt, contName, question;
     private SensorManager sensorManager;
     private Sensor sensor;
-    private int questionnumber, numberOfCorrect, skippedQuestions, answeredQuestions;
+    private int questionnumber;
+    private int numberOfCorrect;
+    private int skippedQuestions;
+    private int answeredQuestions;
+    private int numbOfQuestions;
+    private String numberOfQuestions;
     private float currentX, currentY, currentZ, lastX, lastY, lastZ, xDifference, yDifference, zDiffernece, shakeThreshold = 12f;
     private ArrayList<String> pngURL = new ArrayList<String>();
     private ArrayList<String> nameArray = new ArrayList<>();
@@ -65,6 +68,7 @@ public class GuessTheFlagContinentActivity extends AppCompatActivity implements 
 
     private AlertDialog.Builder dialogBuilder;
     private Dialog dialog;
+    private Intent intent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,6 +104,11 @@ public class GuessTheFlagContinentActivity extends AppCompatActivity implements 
         numberOfCorrect = 0;
         skippedQuestions = 0;
         answeredQuestions = 0;
+
+        intent = getIntent();
+        numberOfQuestions = intent.getStringExtra("numberOfQuestions");
+        Log.e("NUMB", numberOfQuestions);
+        Log.e("REG", String.valueOf(regions));
 
         question = (TextView) findViewById(R.id.question);
 
@@ -163,7 +172,7 @@ public class GuessTheFlagContinentActivity extends AppCompatActivity implements 
             @Override
             public void onClick(View v) {
                 questionnumber += 1;
-                question.setText("Question " + questionnumber + "/" + nameArray.size());
+                question.setText("Question " + questionnumber + "/" + numbOfQuestions);
 
                 for (Button button : buttons) {
                     button.setBackgroundColor(getResources().getColor(R.color.light_grey));
@@ -316,7 +325,14 @@ public class GuessTheFlagContinentActivity extends AppCompatActivity implements 
                 }
             }
         }
-        question.setText("Question " + questionnumber + "/" + nameArray.size());
+
+        if (numberOfQuestions.equals("max")) {
+            numbOfQuestions = nameArray.size();
+        } else {
+            numbOfQuestions = Integer.valueOf(numberOfQuestions);
+        }
+
+        question.setText("Question " + questionnumber + "/" + numbOfQuestions);
         correctTxt.setText("Correct: " + numberOfCorrect);
         Log.e(TAG, String.valueOf(nameArray));
         renderImage();
@@ -326,7 +342,7 @@ public class GuessTheFlagContinentActivity extends AppCompatActivity implements 
 
         Log.e("SIIIZE", String.valueOf(nameArray.size() + 1));
         Log.e("NR", String.valueOf(questionnumber));
-        if (questionnumber == (nameArray.size() + 1)) {
+        if (questionnumber == (numbOfQuestions +1)) {
             Intent resultScreen = new Intent(getApplicationContext(), ResultScreenActivity.class);
             resultScreen.putExtra("correctAnswers", String.valueOf(numberOfCorrect));
             resultScreen.putExtra("skipped", String.valueOf(skippedQuestions));
@@ -388,7 +404,7 @@ public class GuessTheFlagContinentActivity extends AppCompatActivity implements 
 
 
         }
-        question.setText("Question " + questionnumber + "/" + nameArray.size());
+        question.setText("Question " + questionnumber + "/" + numbOfQuestions);
         correctTxt.setText("Correct: " + numberOfCorrect);
 
 
