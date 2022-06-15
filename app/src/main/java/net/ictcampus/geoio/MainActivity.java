@@ -46,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 className = "GuessTheCapital";
                 showPopUp();
+
             }
         });
     }

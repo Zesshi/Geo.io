@@ -1,8 +1,10 @@
 package net.ictcampus.geoio;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
+import android.app.Dialog;
 import android.content.Intent;
 import android.nfc.Tag;
 import android.os.Bundle;
@@ -39,10 +41,12 @@ import java.util.concurrent.Executors;
 public class GuessTheCapital extends AppCompatActivity {
 
     private static final String TAG = "Capitals";
-    private TextView capitals, textView_cap2;
+    private TextView capitals, textView_cap2, correct;
     private Button button_cap1, button_cap2, button_cap3, button_cap4, button_cap5, button_cap6, correctButton, next_cap;
-    private int questionNumber, realQuestionNumber, rightAnswer, skippedQuestion, isClickAllowed;
+    private int questionNumber, realQuestionNumber, rightAnswer, skippedQuestion, numberOfQuestionsInt;
     private final String BASEURL = "https://restcountries.com/v3.1/all";
+
+    private boolean isAccelerometerSensorAvailable, notFirstTime = false, isClickAllowed = true;
 
     List<JSONArray> response = new ArrayList<>();
 
@@ -50,10 +54,13 @@ public class GuessTheCapital extends AppCompatActivity {
     private ArrayList<String> Caps = new ArrayList<String>();
     private ArrayList<String> countrys = new ArrayList<>();
     private ArrayList<Button> buttons = new ArrayList<Button>();
+    private ArrayList<String> answers = new ArrayList<String>();
 
-    private String country;
-    private TextView correct;
 
+    private String country, numberOfQuestions;
+    private AlertDialog.Builder dialogBuilder;
+    private Dialog dialog;
+    private Intent intent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,7 +77,7 @@ public class GuessTheCapital extends AppCompatActivity {
         button_cap5 = (Button) findViewById(R.id.button_cap5);
         button_cap6 = (Button) findViewById(R.id.button_cap6);
         next_cap = (Button) findViewById(R.id.next_cap);
-
+        intent = getIntent();
 
         textView_cap2 = (TextView) findViewById(R.id.textView_cap2);
         correct = (TextView) findViewById(R.id.correct1);
@@ -89,23 +96,14 @@ public class GuessTheCapital extends AppCompatActivity {
         rightAnswer = 0;
         skippedQuestion = 0;
         realQuestionNumber = 0;
-        isClickAllowed = 0;
-
-        getCapital(BASEURL);
+        numberOfQuestions = intent.getStringExtra("numberOfQuestions");
+        Log.wtf("numberOfQuestions", String.valueOf(numberOfQuestions));
 
 
         returnImg.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), ReturnScreen.class);
-                intent.putExtra("class", getLocalClassName());
-                intent.putExtra("Namelist", countries);
-                //  intent.putExtra("Flaglist",  response);
-                intent.putExtra("questionNumber", questionNumber);
-                intent.putExtra("realQuestionNumber", realQuestionNumber);
-                intent.putExtra("rightAnswer", rightAnswer);
-                intent.putExtra("skippedQuestions", skippedQuestion);
-                finish();
-                startActivity(intent);
+                showPopUp();
+
             }
         });
 
@@ -113,28 +111,57 @@ public class GuessTheCapital extends AppCompatActivity {
         next_cap.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                questionNumber += 1;
+                textView_cap2.setText("Question " + questionNumber + "/" + numberOfQuestionsInt);
                 renderGame();
             }
         });
+
 
         for (Button button : buttons) {
             button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (isClickAllowed == 0) {
-                        isClickAllowed = 1;
+                    if (isClickAllowed) {
+                        isClickAllowed = false;
                         if (button.getText().equals(country)) {
                             rightAnswer += 1;
                         }
-                        questionNumber += 1;
                         realQuestionNumber += 1;
-                        textView_cap2.setText("Question " + questionNumber + "/" + countries.size());
                         correct.setText("Correct: " + rightAnswer);
                         showSolution(button);
                     }
                 }
             });
         }
+
+        getCapital(BASEURL);
+
+    }
+
+    private void showPopUp() {
+        dialogBuilder = new AlertDialog.Builder(this);
+        final View popUp = getLayoutInflater().inflate(R.layout.activity_return_screen, null);
+        dialogBuilder.setView(popUp);
+        dialog = dialogBuilder.create();
+        dialog.show();
+
+        Button keepButton = (Button) popUp.findViewById(R.id.keepButton);
+        keepButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        Button quitButton = (Button) popUp.findViewById(R.id.quitButton);
+        quitButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent menu = new Intent(getApplicationContext(), MainActivity.class);
+                startActivity(menu);
+            }
+        });
     }
 
     private void showSolution(Button button) {
@@ -153,10 +180,10 @@ public class GuessTheCapital extends AppCompatActivity {
             button.setBackgroundColor(getResources().getColor(R.color.light_grey));
         }
 
-        isClickAllowed = 0;
+        isClickAllowed = true;
 
 
-        if (questionNumber == (countries.size() + 1)) {
+        if (questionNumber == (numberOfQuestionsInt + 1)) {
             Intent intent = new Intent(getApplicationContext(), ResultScreenActivity.class);
             intent.putExtra("correctAnswers", String.valueOf(rightAnswer));
             intent.putExtra("skipped", String.valueOf(skippedQuestion));
@@ -165,17 +192,17 @@ public class GuessTheCapital extends AppCompatActivity {
             startActivity(intent);
         }
 
-        ArrayList<String> answers = new ArrayList<String>();
+
         for (int i = 0; i < 6; i++) {
             answers.add("x");
         }
 
 
         Integer index = new Random().nextInt(response.size());
-        JSONArray randomURL = response.get(new Random().nextInt(response.size()));
+        JSONArray randomNum = response.get(index);
         response.remove(response.get(index));
-        capitals.setText((randomURL).toString().replace("[", "").replace("]", "").replace("\"", "").trim());
-
+        capitals.setText((randomNum).toString() .replace("[", "").replace("]", "").replace("\"", "").trim());
+capitals.setText("kek");
         country = countries.get(index);
         countries.remove(countries.get(index));
         answers.set(0, country);
@@ -186,20 +213,22 @@ public class GuessTheCapital extends AppCompatActivity {
             answers.set(i, countries.get(random));
         }
         countries.add(country);
-
+        //     Log.e("countries", String.valueOf(countries));
 
         for (Button button : buttons) {
             Integer random = new Random().nextInt(answers.size());
             if (answers.get(random).equals(country)) {
                 correctButton = button;
             }
-
             button.setText(answers.get(random));
             answers.remove(answers.get(random));
-
         }
+        textView_cap2.setText("Question " + questionNumber + "/" + numberOfQuestionsInt);
+        correct.setText("Correct: " + rightAnswer);
+        Log.wtf("numberOfQuestions the second", String.valueOf(numberOfQuestions));
 
     }
+
 
     private void getCapital(String urlParam) {
         ExecutorService executor = Executors.newSingleThreadExecutor();
@@ -227,13 +256,14 @@ public class GuessTheCapital extends AppCompatActivity {
                     @Override
                     public void run() {
                         parseJson(msg.toString());
-                        Log.v("countrys", String.valueOf(countries));
+
 
                     }
                 });
             }
         });
     }
+
 
     @SuppressLint("SetTextI18n")
     public void parseJson(String jsonString) {
@@ -247,27 +277,23 @@ public class GuessTheCapital extends AppCompatActivity {
             for (int i = 0; i < jsonArray.length(); i++) {
 
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
-                JSONArray capl = jsonObject.getJSONArray("capital");
-                JSONObject name = jsonObject.getJSONObject("name");
-                //Log.e(TAG, String.valueOf(jsonObject));
+                if (jsonObject.has("capital")) {
+                    JSONArray capl = jsonObject.getJSONArray("capital");
+                    JSONObject name = jsonObject.getJSONObject("name");
+                    Iterator<?> iteratorName = name.keys();
+                    HashMap<String, String> mapName = new HashMap<>();
+                    while (iteratorName.hasNext()) {
+                        Object key = iteratorName.next();
+                        Object value = name.get(key.toString());
+                        mapName.put(key.toString(), value.toString());
+                    }
 
-                Log.e("CAPITALS", String.valueOf(capl));
-                response.add(capl);
+                    responseName.add(mapName);
+                    response.add(capl);
 
-                Log.e("numberOfLoopThroughs", String.valueOf(jsonArray.length()));
-
-
-                Iterator<?> iteratorName = name.keys();
-                HashMap<String, String> mapName = new HashMap<>();
-
-
-                while (iteratorName.hasNext()) {
-                    Object key = iteratorName.next();
-                    Object value = name.get(key.toString());
-                    mapName.put(key.toString(), value.toString());
                 }
 
-                responseName.add(mapName);
+
             }
 
 
@@ -283,11 +309,15 @@ public class GuessTheCapital extends AppCompatActivity {
                 }
             }
         }
+
         Log.e("countrys", String.valueOf(countries));
 
-        //Log.e(TAG, String.valueOf(countries));
-        //Log.e(TAG, String.valueOf(response));
-        textView_cap2.setText("Question " + questionNumber + "/" + countries.size());
+        if (numberOfQuestions.equals("max")) {
+            numberOfQuestionsInt = countries.size();
+        } else {
+            numberOfQuestionsInt = Integer.valueOf(numberOfQuestions);
+        }
+        textView_cap2.setText("Question " + questionNumber + "/" + numberOfQuestionsInt);
         correct.setText("Correct: " + rightAnswer);
         renderGame();
     }
