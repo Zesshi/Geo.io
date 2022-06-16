@@ -7,6 +7,7 @@ import android.text.Editable;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -19,12 +20,25 @@ public class GuessTheFlagContinentHostActivity extends AppCompatActivity {
     private Dialog dialog;
     private String classname;
     private Editable numberOfQuestions;
+    private ImageView returnarr;
     private ArrayList regions = new ArrayList();
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_guess_the_flag_continent_host);
+
+        returnarr = (ImageView) findViewById(R.id.returnArr);
+
+        returnarr.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent homescreen = new Intent(getApplicationContext(), MainActivity.class);
+                startActivity(homescreen);
+            }
+        });
 
         Button europe = (Button) findViewById(R.id.europeBtn);
         europe.setOnClickListener(new View.OnClickListener() {
