@@ -58,12 +58,12 @@ public class GuessTheFlagActivity extends AppCompatActivity implements SensorEve
 
     private Button button1, button2, button3, button4, button5, button6, nextButton, correctButton;
 
-    private ArrayList<String> countriesEng = new ArrayList<String>();
-    private ArrayList<String> countriesDeu = new ArrayList<>();
+    private final ArrayList<String> countriesEng = new ArrayList<String>();
+    private final ArrayList<String> countriesDeu = new ArrayList<>();
     private ArrayList<String> countries = new ArrayList<>();
-    private ArrayList<String> pngURL = new ArrayList<String>();
-    private ArrayList<String> answers = new ArrayList<String>();
-    private ArrayList<Button> buttons = new ArrayList<Button>();
+    private final ArrayList<String> pngURL = new ArrayList<String>();
+    private final ArrayList<String> answers = new ArrayList<String>();
+    private final ArrayList<Button> buttons = new ArrayList<Button>();
 
     private int questionNumber, realQuestionNumber, rightAnswer, skippedQuestion, numberOfQuestionsInt;
 

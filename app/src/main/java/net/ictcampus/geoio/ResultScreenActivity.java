@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -15,6 +16,8 @@ public class ResultScreenActivity extends AppCompatActivity {
     private int correctAnswers, numbOfQuestions, skippedQuestions;
     private TextView result, skipped;
     private Button returnButton;
+    private int highscore;
+    private String subject;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +44,9 @@ public class ResultScreenActivity extends AppCompatActivity {
         result.setText(correctAnswers + " / " + numbOfQuestions  + " correct | " + resultInPercent + "%");
         skipped.setText("Skipped Questions: " + skippedQuestions);
 
+
+        setHighscore();
+
         returnButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -49,5 +55,10 @@ public class ResultScreenActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    private void setHighscore() {
+        
+        highscore = PreferenceManager.getDefaultSharedPreferences(this).getInt("Highscore" + continent, )
     }
 }

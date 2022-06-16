@@ -70,7 +70,6 @@ public class GuessTheCapital extends AppCompatActivity implements SensorEventLis
     private Dialog dialog;
     private Intent intent;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
