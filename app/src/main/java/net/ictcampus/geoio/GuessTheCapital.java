@@ -108,6 +108,12 @@ public class GuessTheCapital extends AppCompatActivity implements SensorEventLis
         numberOfQuestions = intent.getStringExtra("numberOfQuestions");
         Log.wtf("numberOfQuestions", String.valueOf(numberOfQuestions));
 
+/*        if (sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER) != null) {
+            sensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+            isAccelerometerSensorAvailable = true;
+        } else {
+            isAccelerometerSensorAvailable = false;
+        }*/
 
         returnImg.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -120,10 +126,12 @@ public class GuessTheCapital extends AppCompatActivity implements SensorEventLis
         next_cap.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                questionNumber += 1;
+                if (isClickAllowed == false) {
+                    questionNumber += 1;
 
-                textView_cap2.setText("Question " + questionNumber + "/" + numberOfQuestionsInt);
-                renderGame();
+                    textView_cap2.setText("Question " + questionNumber + "/" + numberOfQuestionsInt);
+                    renderGame();
+                }
             }
         });
 
@@ -136,6 +144,8 @@ public class GuessTheCapital extends AppCompatActivity implements SensorEventLis
                         isClickAllowed = false;
                         if (button.getText().equals(country)) {
                             rightAnswer += 1;
+
+
                         }
                         realQuestionNumber += 1;
                         correct.setText("Correct: " + rightAnswer);
@@ -211,7 +221,7 @@ public class GuessTheCapital extends AppCompatActivity implements SensorEventLis
         Integer index = new Random().nextInt(response.size());
         JSONArray randomNum = response.get(index);
         response.remove(response.get(index));
-        capitals.setTypeface(capitals.getTypeface(), Typeface.BOLD_ITALIC);
+        capitals.setTypeface(capitals.getTypeface(), Typeface.BOLD);
         capitals.setText((randomNum).toString().replace("[", "").replace("]", "").replace("\"", "").trim());
 
         country = countries.get(index);

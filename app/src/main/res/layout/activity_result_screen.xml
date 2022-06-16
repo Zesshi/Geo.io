@@ -13,7 +13,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="124dp"
         android:text="You finished the Quiz!"
-        android:textSize="20dp"
+        android:textSize="20sp"
+        android:textColor="#EDEFFE"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -25,6 +26,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="40dp"
         android:text="Your Result: "
+        android:textColor="#EDEFFE"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
@@ -37,6 +39,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="180dp"
         android:text="Skipped Questions: "
+        android:textColor="#EDEFFE"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
@@ -49,6 +52,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="48dp"
         android:text="placeholder"
+        android:textColor="#EDEFFE"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
@@ -64,5 +68,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        android:backgroundTint="@color/light_grey"
         tools:ignore="MissingConstraints" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
