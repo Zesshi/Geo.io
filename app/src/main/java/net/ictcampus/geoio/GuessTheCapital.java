@@ -65,7 +65,6 @@ public class GuessTheCapital extends AppCompatActivity implements SensorEventLis
     private ArrayList<Button> buttons = new ArrayList<Button>();
     private ArrayList<String> answers = new ArrayList<String>();
 
-
     private String country, numberOfQuestions;
     private AlertDialog.Builder dialogBuilder;
     private Dialog dialog;
