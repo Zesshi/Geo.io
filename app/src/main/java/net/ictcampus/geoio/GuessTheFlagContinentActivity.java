@@ -47,7 +47,7 @@ public class GuessTheFlagContinentActivity extends AppCompatActivity implements 
     private static final String TAG = "FlagsOfEurope";
     private ImageView flag, returnArr;
     private Button answer1, answer2, answer3, answer4, answer5, answer6, correctBtn, nextQ;
-    private String correctAnswer, combined;
+    private String correctAnswer, combined, antarctic;
     private TextView correctTxt, contName, question;
     private SensorManager sensorManager;
     private Sensor sensor;
@@ -137,8 +137,6 @@ public class GuessTheFlagContinentActivity extends AppCompatActivity implements 
         }
 
 
-
-
         /*
         if (regions.size() >= 2) {
             getFlags(regions);
@@ -213,17 +211,15 @@ public class GuessTheFlagContinentActivity extends AppCompatActivity implements 
                 } catch (Exception e) {
                     Log.v(TAG, e.toString());
                 }
-                combined = msg.toString();
+                antarctic = msg.toString();
 
             }
         });
     }
 
+
     private void getFlags(String urlParam) {
         Log.e("sdfgh", String.valueOf(regions.get(0)));
-
-
-
         ExecutorService executor = Executors.newSingleThreadExecutor();
         Handler handler = new Handler(Looper.getMainLooper());
         executor.execute(new Runnable() {
@@ -248,9 +244,9 @@ public class GuessTheFlagContinentActivity extends AppCompatActivity implements 
                     @Override
                     public void run() {
                         if (regions.get(0).equals("oceania")) {
-                            String yeye = (combined.substring(0,combined.length()-1 ))+"," + msg.toString().substring(1) ;
-                            Log.e(TAG, yeye);
-                            parseJson(yeye);
+                            String combined = (antarctic.substring(0,antarctic.length()-1 ))+"," + msg.toString().substring(1) ;
+                            Log.e(TAG, combined);
+                            parseJson(combined);
                         } else {
                             parseJson(msg.toString());
                         }
@@ -263,55 +259,10 @@ public class GuessTheFlagContinentActivity extends AppCompatActivity implements 
     }
 
 
-    /*
-    private void getMultipleCont(ArrayList<String> urlParams) {
-
-        Log.e(TAG, String.valueOf(urlParams));
-        ExecutorService executor = Executors.newSingleThreadExecutor();
-        Handler handler = new Handler(Looper.getMainLooper());
-        for (String urlParam : urlParams) {
-            Log.e("YEYEY", String.valueOf(urlParam));
-            executor.execute(new Runnable() {
-                @Override
-                public void run() {
-                    StringBuilder msg = new StringBuilder();
-                    HttpURLConnection urlConnection;
-                    try {
-                        URL url = new URL(BASEURL + urlParam);
-                        Log.e("Here is the URL", String.valueOf(url));
-                        urlConnection = (HttpURLConnection) url.openConnection();
-                        InputStream in = new BufferedInputStream(urlConnection.getInputStream());
-                        BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-                        String line;
-                        while ((line = reader.readLine())!= null) {
-                            msg.append(line);
-                            Log.e(TAG, String.valueOf(msg));
-                        }
-                    } catch (Exception e) {
-                        Log.v(TAG, e.toString());
-                    }
-
-                    handler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            json.add(msg.toString());
-                            Log.e("JSON HERE", String.valueOf(json));
-                        }
-                    });
-                }
-            });
-
-        }
-    } */
-
-
-
-
     public void parseJson(String jsonString) {
 
         List<HashMap<String, String>> response = new ArrayList<>();
         List<HashMap<String, String>> nameResponse = new ArrayList<>();
-        //List<HashMap<String, String>> flagresp = new ArrayList<>();
         JSONArray jsonArray = null;
 
         try {
