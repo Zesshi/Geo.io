@@ -344,6 +344,11 @@ public class GuessTheFlagContinentActivity extends AppCompatActivity implements 
             resultScreen.putExtra("correctAnswers", String.valueOf(numberOfCorrect));
             resultScreen.putExtra("skipped", String.valueOf(skippedQuestions));
             resultScreen.putExtra("numbOfQuestions", String.valueOf(answeredQuestions));
+            if (regions.get(0).equals("oceania")){
+                resultScreen.putExtra("continent", "Oceania / Antarctic");
+            } else {
+                resultScreen.putExtra("continent", regions.get(0));
+            }
             finish();
             startActivity(resultScreen);
         }
