@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".highscoresActivity">
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="34dp"
+        android:layout_marginTop="32dp"
+        android:text=""
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="MissingConstraints" />
+
+    <TextView
+        android:id="@+id/all"
+        android:layout_width="wrap_content"
+        android:layout_height="34dp"
+        android:layout_marginTop="120dp"
+        android:contentDescription="all"
+        android:text=""
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="MissingConstraints" />
+
+    <TextView
+        android:id="@+id/africa"
+        android:layout_width="wrap_content"
+        android:layout_height="34dp"
+        android:layout_marginTop="20dp"
+        android:text=""
+        android:contentDescription="africa"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/oceania"
+        tools:ignore="MissingConstraints" />
+
+    <TextView
+        android:id="@+id/oceania"
+        android:layout_width="wrap_content"
+        android:layout_height="34dp"
+        android:layout_marginTop="20dp"
+        android:text=""
+        android:contentDescription="oceania"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/asia"
+        tools:ignore="MissingConstraints" />
+
+    <TextView
+        android:id="@+id/asia"
+        android:layout_width="wrap_content"
+        android:layout_height="34dp"
+        android:layout_marginTop="20dp"
+        android:text=""
+        android:contentDescription="asia"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/america"
+        tools:ignore="MissingConstraints" />
+
+    <TextView
+        android:id="@+id/america"
+        android:layout_width="wrap_content"
+        android:layout_height="34dp"
+        android:layout_marginTop="20dp"
+        android:text=""
+        android:contentDescription="america"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/europe"
+        tools:ignore="MissingConstraints" />
+
+    <TextView
+        android:id="@+id/europe"
+        android:layout_width="wrap_content"
+        android:layout_height="34dp"
+        android:layout_marginTop="20dp"
+        android:text=""
+        android:contentDescription="europe"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/capital"
+        tools:ignore="MissingConstraints" />
+
+    <TextView
+        android:id="@+id/capital"
+        android:layout_width="wrap_content"
+        android:layout_height="34dp"
+        android:layout_marginTop="20dp"
+        android:text=""
+        android:contentDescription="capital"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/all"
+        tools:ignore="MissingConstraints" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
