@@ -229,15 +229,28 @@ public class GuessTheCapital extends AppCompatActivity implements SensorEventLis
         answers.set(0, country);
 
 
-        for (int i = 1; i < 6; i++) {
-            Integer random = new Random().nextInt(countries.size());
-            answers.set(i, countries.get(random));
+        ArrayList<String> temp = new ArrayList<>();
+
+        for (int i = 0; i < countries.size(); i++) {
+            temp.add(countries.get(i));
         }
+
         countries.add(country);
-        //     Log.e("countries", String.valueOf(countries));
+
+        answers.set(0, country);
+
+        for (int i = 1; i < 6; i++) {
+            int random = new Random().nextInt(temp.size());
+            answers.set(i, temp.get(random));
+            temp.remove(temp.get(random));
+        }
+
+        for (int i = 0; i < temp.size(); i++) {
+            temp.remove(0);
+        }
 
         for (Button button : buttons) {
-            Integer random = new Random().nextInt(answers.size());
+            int random = new Random().nextInt(answers.size());
             if (answers.get(random).equals(country)) {
                 correctButton = button;
             }
