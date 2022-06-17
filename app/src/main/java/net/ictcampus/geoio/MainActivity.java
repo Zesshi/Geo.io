@@ -56,6 +56,15 @@ public class MainActivity extends AppCompatActivity {
         spinner = (Spinner) findViewById(R.id.spinner);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.languages_array, android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
+
+        Button highscores = (Button) findViewById(R.id.highscoreButton);
+        highscores.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), highscoresActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
     private void showPopUp() {
@@ -89,9 +98,7 @@ public class MainActivity extends AppCompatActivity {
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 numberOfQuestions = count.getText();
-
                 if (className.equals("GuessTheFlagActivity")) {
                     Intent intent = new Intent(getApplicationContext(), GuessTheFlagActivity.class);
                     intent.putExtra("numberOfQuestions", String.valueOf(numberOfQuestions));
@@ -105,6 +112,5 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
-
     }
 }

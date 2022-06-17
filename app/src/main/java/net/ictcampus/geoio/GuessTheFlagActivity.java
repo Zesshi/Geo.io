@@ -124,11 +124,11 @@ public class GuessTheFlagActivity extends AppCompatActivity implements SensorEve
         nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!isClickAllowed) {
+                //if (!isClickAllowed) {
                     questionNumber += 1;
                     textView2.setText("Question " + questionNumber + "/" + numberOfQuestionsInt);
                     renderGame();
-                }
+                //}
             }
         });
 
@@ -192,11 +192,12 @@ public class GuessTheFlagActivity extends AppCompatActivity implements SensorEve
         }
 
         isClickAllowed = true;
-        if (questionNumber == (numberOfQuestionsInt + 1)) {
+        if (questionNumber == (numberOfQuestionsInt)) {
             Intent intent = new Intent(getApplicationContext(), ResultScreenActivity.class);
             intent.putExtra("correctAnswers", String.valueOf(rightAnswer));
             intent.putExtra("skipped", String.valueOf(skippedQuestion));
             intent.putExtra("numbOfQuestions", String.valueOf(realQuestionNumber));
+            intent.putExtra("continent", "all");
             finish();
             startActivity(intent);
         }
@@ -366,9 +367,6 @@ public class GuessTheFlagActivity extends AppCompatActivity implements SensorEve
                     }
                 }
 
-
-
-
                 responseImg.add(mapFlg);
                 responseEng.add(mapNameEng);
                 responseDeu.add(mapNameDeu);
@@ -413,7 +411,7 @@ public class GuessTheFlagActivity extends AppCompatActivity implements SensorEve
 
 
         if (numberOfQuestions.equals("max")) {
-            numberOfQuestionsInt = countries.size();
+            numberOfQuestionsInt = (countries.size());
         } else {
             numberOfQuestionsInt = Integer.valueOf(numberOfQuestions);
         }
@@ -421,28 +419,3 @@ public class GuessTheFlagActivity extends AppCompatActivity implements SensorEve
         renderGame();
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
