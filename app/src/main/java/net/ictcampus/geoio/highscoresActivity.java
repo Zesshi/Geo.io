@@ -12,6 +12,8 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
+import javax.xml.transform.Result;
+
 public class highscoresActivity extends AppCompatActivity {
 
     private ArrayList<TextView> mode = new ArrayList<>();
@@ -22,6 +24,7 @@ public class highscoresActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_highscores);
 
+
         mode.add((TextView) findViewById(R.id.asia));
         mode.add((TextView) findViewById(R.id.europe));
         mode.add((TextView) findViewById(R.id.africa));
@@ -30,9 +33,10 @@ public class highscoresActivity extends AppCompatActivity {
         mode.add((TextView) findViewById(R.id.all));
         mode.add((TextView) findViewById(R.id.capital));
         for (TextView textView: mode) {
-            SharedPreferences sharedPreferences = getSharedPreferences("save", MODE_PRIVATE);
+            String continent = String.valueOf(textView.getContentDescription());
 
-            textView.setText("Highscore " + textView.getContentDescription()+ ": " + (sharedPreferences.getFloat(("highscore"+textView.getContentDescription()), 0)));
+            float highscore = ResultScreenActivity.getDefaults("highscore"+continent, this);
+            textView.setText("Highscore " + continent + ": " + highscore +"%");
         }
 
     }

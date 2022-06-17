@@ -124,11 +124,11 @@ public class GuessTheFlagActivity extends AppCompatActivity implements SensorEve
         nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //if (!isClickAllowed) {
+                if (!isClickAllowed) {
                     questionNumber += 1;
                     textView2.setText("Question " + questionNumber + "/" + numberOfQuestionsInt);
                     renderGame();
-                //}
+                }
             }
         });
 
@@ -192,7 +192,7 @@ public class GuessTheFlagActivity extends AppCompatActivity implements SensorEve
         }
 
         isClickAllowed = true;
-        if (questionNumber == (numberOfQuestionsInt)) {
+        if (questionNumber == (numberOfQuestionsInt) +1) {
             Intent intent = new Intent(getApplicationContext(), ResultScreenActivity.class);
             intent.putExtra("correctAnswers", String.valueOf(rightAnswer));
             intent.putExtra("skipped", String.valueOf(skippedQuestion));

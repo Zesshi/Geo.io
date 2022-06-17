@@ -3,6 +3,7 @@ package net.ictcampus.geoio;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -34,19 +35,13 @@ public class ResultScreenActivity extends AppCompatActivity {
         numbOfQuestions = Integer.parseInt(intent.getStringExtra("numbOfQuestions"));
         skippedQuestions = Integer.parseInt(intent.getStringExtra("skipped"));
 
-        Log.wtf(TAG, String.valueOf(correctAnswers));
-        Log.wtf(TAG, String.valueOf(numbOfQuestions));
-
-        float tryToCast  = correctAnswers;
-        float tryToCast2  = numbOfQuestions;
-
+        float tryToCast = correctAnswers;
+        float tryToCast2 = numbOfQuestions;
 
 
         resultInPercent = tryToCast / tryToCast2 * 100;
-        Log.wtf("REsult", String.valueOf(resultInPercent));
-        PreferenceManager.getDefaultSharedPreferences(this).edit().putFloat("highscoreall", resultInPercent);
 
-        Log.wtf("TAG", String.valueOf(PreferenceManager.getDefaultSharedPreferences(this).getFloat("highscoreall", 0)));
+        setDefaults("highscore" + intent.getStringExtra("continent"), resultInPercent, this);
 
         returnButton = (Button) findViewById(R.id.returnButton);
 
@@ -56,8 +51,6 @@ public class ResultScreenActivity extends AppCompatActivity {
         result.setText(correctAnswers + " / " + numbOfQuestions + " correct | " + resultInPercent + "%");
         skipped.setText("Skipped Questions: " + skippedQuestions);
 
-        setHighscore();
-
         returnButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -66,40 +59,20 @@ public class ResultScreenActivity extends AppCompatActivity {
             }
         });
 
+
     }
 
-    @SuppressLint("CommitPrefEdits")
-    private void setHighscore() {
-        String continent = intent.getStringExtra("continent");
-        Log.wtf("Continent", "highscore"+continent);
-        float currentSavedHighscore = getHighscore(continent);
-
-        if (continent.equals("all")) {
-            if(resultInPercent > currentSavedHighscore){
-                //PreferenceManager.getDefaultSharedPreferences(this).edit().putFloat("highscore" +continent, resultInPercent);
-                /*
-                SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
-                SharedPreferences.Editor editor = sharedPref.edit();
-                editor.putFloat(("highscore" + continent), resultInPercent);
-                editor.apply();
-
-                 */
-                SharedPreferences.Editor editor = getSharedPreferences("save", MODE_PRIVATE).edit();
-                editor.putFloat("value", currentSavedHighscore);
-                editor.apply();
-            }
-        } else if (continent.equals("captial")) {
-                if (resultInPercent > currentSavedHighscore){
-
-                }
-        } else {
-            if (resultInPercent > currentSavedHighscore) {
-                PreferenceManager.getDefaultSharedPreferences(this).edit().putFloat("highscore" +continent, resultInPercent);
-            }
+    public static void setDefaults(String key, Float value, Context context) {
+        if (value > getDefaults(key, context)) {
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.putFloat(key, value);
+            editor.apply(); // or editor.commit() in case you want to write data instantly
         }
     }
 
-    private float getHighscore(String continent){
-        return PreferenceManager.getDefaultSharedPreferences(this).getFloat("highscore" +continent , 0);
+    public static Float getDefaults(String key, Context context) {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        return preferences.getFloat(key, 0);
     }
 }
