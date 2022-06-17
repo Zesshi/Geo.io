@@ -59,12 +59,12 @@ public class GuessTheFlagContinentActivity extends AppCompatActivity implements 
     private String numberOfQuestions;
     private float currentX, currentY, currentZ, lastX, lastY, lastZ, xDifference, yDifference, zDiffernece, shakeThreshold = 12f;
     private ArrayList<String> pngURL = new ArrayList<String>();
-    private ArrayList<String> nameArray = new ArrayList<>();
+    public ArrayList<String> nameArray = new ArrayList<>();
     private ArrayList<String> regions = new ArrayList<>();
     private ArrayList<String> answers = new ArrayList<>();
     private ArrayList<String> tempAnswers = new ArrayList<>();
     private ArrayList<Button> buttons = new ArrayList<>();
-     private ArrayList<String> json = new ArrayList<>();
+    private ArrayList<String> json = new ArrayList<>();
     private boolean isAccelerometerAvailable, notFirstTime = false, clickAllowed = true;
     private final String BASEURL = "https://restcountries.com/v3.1/region/";
 
@@ -189,6 +189,15 @@ public class GuessTheFlagContinentActivity extends AppCompatActivity implements 
         });
 
 
+    }
+
+    public int getSize() {
+        getAntarctica();
+        getFlags(BASEURL + regions.get(0));
+
+        int size = pngURL.size();
+
+        return size;
     }
 
     private void getAntarctica() {
