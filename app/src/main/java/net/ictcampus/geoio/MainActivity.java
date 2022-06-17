@@ -13,14 +13,16 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
     private AlertDialog.Builder dialogBuilder;
     private Dialog dialog;
     private String className;
-    private Editable numberOfQuestions;
+    private String  numberOfQuestions;
     private Spinner spinner;
+    private int numOfCountries;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
         guessTheFlagButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 className = "GuessTheFlagActivity";
+                numOfCountries = 250;
                 showPopUp();
             }
         });
@@ -48,6 +51,7 @@ public class MainActivity extends AppCompatActivity {
         guessTheCapitalButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 className = "GuessTheCapital";
+                numOfCountries = 246;
                 showPopUp();
 
             }
@@ -98,17 +102,33 @@ public class MainActivity extends AppCompatActivity {
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                numberOfQuestions = count.getText();
+
+                numberOfQuestions = count.getText().toString();
+
                 if (className.equals("GuessTheFlagActivity")) {
-                    Intent intent = new Intent(getApplicationContext(), GuessTheFlagActivity.class);
-                    intent.putExtra("numberOfQuestions", String.valueOf(numberOfQuestions));
-                    intent.putExtra("language", spinner.getSelectedItem().toString());
-                    startActivity(intent);
+                    if (count.getText().toString().trim().length() == 0) {
+                        Toast.makeText(getApplicationContext(), "You must enter a number or select \"all\"", Toast.LENGTH_SHORT).show();
+                    } else if ((Integer.parseInt(numberOfQuestions) <1) || Integer.parseInt(numberOfQuestions) > numOfCountries) {
+                        Toast.makeText(getApplicationContext(), "Please enter a number between 1 and 250", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Intent intent = new Intent(getApplicationContext(), GuessTheFlagActivity.class);
+                        intent.putExtra("numberOfQuestions", String.valueOf(numberOfQuestions));
+                        intent.putExtra("language", spinner.getSelectedItem().toString());
+                        startActivity(intent);
+                    }
+
                 } else if (className.equals("GuessTheCapital")) {
-                    Intent intent = new Intent(getApplicationContext(), GuessTheCapital.class);
-                    intent.putExtra("numberOfQuestions", String.valueOf(numberOfQuestions));
-                    intent.putExtra("language", spinner.getSelectedItem().toString());
-                    startActivity(intent);
+                    if (count.getText().toString().trim().length() == 0) {
+                        Toast.makeText(getApplicationContext(), "You must enter a number or select \"all\"", Toast.LENGTH_SHORT).show();
+                    } else if ((Integer.parseInt(numberOfQuestions) <1) || Integer.parseInt(numberOfQuestions) > numOfCountries) {
+                        Toast.makeText(getApplicationContext(), "Please enter a number between 1 and 246", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Intent intent = new Intent(getApplicationContext(), GuessTheCapital.class);
+                        intent.putExtra("numberOfQuestions", String.valueOf(numberOfQuestions));
+                        intent.putExtra("language", spinner.getSelectedItem().toString());
+                        startActivity(intent);
+                    }
+
                 }
             }
         });

@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -15,6 +16,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class GuessTheFlagContinentHostActivity extends AppCompatActivity {
 
@@ -132,15 +134,17 @@ public class GuessTheFlagContinentHostActivity extends AppCompatActivity {
             }
         });
 
-
+//        if ((Integer.parseInt(numberOfQuestions) < 1) || (count.getText() == null) || (Integer.parseInt(numberOfQuestions) > numOfCountires) )
 
         Button submit = (Button) popUp.findViewById(R.id.buttonSubmit);
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 numberOfQuestions = count.getText().toString();
-                Log.e("dfghjk", numberOfQuestions);
-                if ((Integer.parseInt(numberOfQuestions) < 1) || (numberOfQuestions.equals("")) || (Integer.parseInt(numberOfQuestions) > numOfCountires) ) {
+                Log.e("dfghjk", String.valueOf(count.getText().toString().trim().length()));
+                if (count.getText().toString().trim().length() == 0) {
+                    Toast.makeText(getApplicationContext(), "You must enter a number or select \"all\"", Toast.LENGTH_SHORT).show();
+                } else if ((Integer.parseInt(numberOfQuestions) < 1) || (Integer.parseInt(numberOfQuestions) > numOfCountires) ) {
                     Toast.makeText(getApplicationContext(), "Invalid Input", Toast.LENGTH_SHORT).show();
                 } else {
                     Intent guessTheFlag = new Intent(getApplicationContext(), GuessTheFlagContinentActivity.class);
