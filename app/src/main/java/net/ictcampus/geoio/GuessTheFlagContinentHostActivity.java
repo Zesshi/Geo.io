@@ -4,10 +4,12 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -19,9 +21,11 @@ public class GuessTheFlagContinentHostActivity extends AppCompatActivity {
     private AlertDialog.Builder dialogBuilder;
     private Dialog dialog;
     private String classname;
-    private Editable numberOfQuestions;
+    private int numOfCountires;
+    private String numberOfQuestions;
     private ImageView returnarr;
     private ArrayList regions = new ArrayList();
+
 
 
 
@@ -45,6 +49,7 @@ public class GuessTheFlagContinentHostActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 regions.add("europe");
+                numOfCountires = 53;
                 showPopUp();
 
             }
@@ -54,6 +59,7 @@ public class GuessTheFlagContinentHostActivity extends AppCompatActivity {
         asia.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 regions.add("asia");
+                numOfCountires = 50;
                 showPopUp();
             }
         });
@@ -63,6 +69,7 @@ public class GuessTheFlagContinentHostActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 regions.add("america");
+                numOfCountires = 56;
                 showPopUp();
             }
         });
@@ -71,6 +78,7 @@ public class GuessTheFlagContinentHostActivity extends AppCompatActivity {
         africa.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 regions.add("africa");
+                numOfCountires = 59;
                 showPopUp();
 
 
@@ -87,6 +95,7 @@ public class GuessTheFlagContinentHostActivity extends AppCompatActivity {
         oceania.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 regions.add("oceania");
+                numOfCountires = 32;
                 //regions.add("arctic");
                 //regions.add("antarctic");
                 showPopUp();
@@ -123,15 +132,23 @@ public class GuessTheFlagContinentHostActivity extends AppCompatActivity {
             }
         });
 
+
+
         Button submit = (Button) popUp.findViewById(R.id.buttonSubmit);
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                numberOfQuestions = count.getText();
-                Intent guessTheFlag = new Intent(getApplicationContext(), GuessTheFlagContinentActivity.class);
-                guessTheFlag.putStringArrayListExtra("regions", regions);
-                guessTheFlag.putExtra("numberOfQuestions", String.valueOf(numberOfQuestions));
-                startActivity(guessTheFlag);
+                numberOfQuestions = count.getText().toString();
+                Log.e("dfghjk", numberOfQuestions);
+                if ((Integer.parseInt(numberOfQuestions) < 1) || (numberOfQuestions.equals("")) || (Integer.parseInt(numberOfQuestions) > numOfCountires) ) {
+                    Toast.makeText(getApplicationContext(), "Invalid Input", Toast.LENGTH_SHORT).show();
+                } else {
+                    Intent guessTheFlag = new Intent(getApplicationContext(), GuessTheFlagContinentActivity.class);
+                    guessTheFlag.putStringArrayListExtra("regions", regions);
+                    guessTheFlag.putExtra("numberOfQuestions", String.valueOf(numberOfQuestions));
+                    startActivity(guessTheFlag);
+                }
+
             }
         });
     }
