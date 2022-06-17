@@ -70,7 +70,6 @@ public class GuessTheCapital extends AppCompatActivity implements SensorEventLis
     private Dialog dialog;
     private Intent intent;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -108,12 +107,13 @@ public class GuessTheCapital extends AppCompatActivity implements SensorEventLis
         numberOfQuestions = intent.getStringExtra("numberOfQuestions");
         Log.wtf("numberOfQuestions", String.valueOf(numberOfQuestions));
 
-/*        if (sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER) != null) {
-            sensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-            isAccelerometerSensorAvailable = true;
-        } else {
-            isAccelerometerSensorAvailable = false;
-        }*/
+                  /*  if (sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER) != null) {
+                        sensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+                        isAccelerometerSensorAvailable = true;
+                    } else {
+                        isAccelerometerSensorAvailable = false;
+                    }*/
+
 
         returnImg.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -214,7 +214,7 @@ public class GuessTheCapital extends AppCompatActivity implements SensorEventLis
 
 
         for (int i = 0; i < 6; i++) {
-            answers.add("x");
+            answers.add("ChristenRonaldo Sui");
         }
 
 
