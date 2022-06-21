@@ -1,45 +1,26 @@
 package net.ictcampus.geoio;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.when;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import android.os.Bundle;
+import android.os.Looper;
 
-public class GuessTheFlagActivityTest {
-GuessTheFlagActivity guessTheFlagActivity = new GuessTheFlagActivity();
+import org.junit.jupiter.api.Test;
 
+class GuessTheFlagActivityTest {
 
-@Test
-    public void setUp() throws Exception {
-        assertNotEquals(null, guessTheFlagActivity.button1.getText());
-    }
-
-    @After
-    public void tearDown() throws Exception {
-    }
-
+    GuessTheFlagActivity guessTheFlagActivity = new GuessTheFlagActivity();
     @Test
-    public void onCreate() {
-    }
+    void onCreate() {
+        //arrange
+        Bundle savedInstanceState = new Bundle();
+        when(Looper.getMainLooper()).thenReturn(null);
+        //act
+        this.guessTheFlagActivity.onCreate(savedInstanceState);
+        //assert
+        assertNotEquals(null, this.guessTheFlagActivity.button1);
 
-    @Test
-    public void onSensorChanged() {
-    }
-
-    @Test
-    public void onAccuracyChanged() {
-    }
-
-    @Test
-    public void onResume() {
-    }
-
-    @Test
-    public void onPause() {
-    }
-
-    @Test
-    public void parseJson() {
     }
 }
