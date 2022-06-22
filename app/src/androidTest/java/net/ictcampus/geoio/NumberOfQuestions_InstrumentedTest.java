@@ -3,6 +3,7 @@ package net.ictcampus.geoio;
 import android.os.Bundle;
 import android.os.Looper;
 import android.os.Parcel;
+import android.util.Log;
 import android.util.Pair;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
@@ -62,6 +63,11 @@ public class NumberOfQuestions_InstrumentedTest extends TestCase {
         onView(withId(R.id.button)).perform(click());
         onView(withId(R.id.inputNumber)).perform(typeText("100"), closeSoftKeyboard());
         onView(withId(R.id.buttonSubmit)).perform(click());
+        try {
+            Thread.sleep(700);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         onView(withId(R.id.textView2)).check(matches(withText("Question " + "1" + "/" + "100")));
     }
 
