@@ -19,7 +19,7 @@
             android:name=".highscoresActivity"
             android:exported="false" />
         <activity
-            android:name=".askForQuestion"
+            android:name=".AskForQuestion"
             android:exported="false" />
         <activity
             android:name=".ResultScreenActivity"

@@ -16,11 +16,13 @@ class GuessTheFlagActivityTest {
     void onCreate() {
         //arrange
         Bundle savedInstanceState = new Bundle();
+        //exception
         when(Looper.getMainLooper()).thenReturn(null);
+        doNothing().when(Looper.getMainLooper());
         //act
         this.guessTheFlagActivity.onCreate(savedInstanceState);
         //assert
-        assertNotEquals(null, this.guessTheFlagActivity.button1);
+        assertNotEquals(null, this.guessTheFlagActivity.button1.getText());
 
     }
 }
