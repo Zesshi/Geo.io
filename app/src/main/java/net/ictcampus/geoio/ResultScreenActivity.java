@@ -13,42 +13,47 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.prefs.Preferences;
 
 public class ResultScreenActivity extends AppCompatActivity {
 
     private static final String TAG = "Result";
-    private int correctAnswers, numbOfQuestions, skippedQuestions;
+    private int skippedQuestions, resultInPercent;
+    private float flCorrectAnswers, flNumbOfQuestions, flMaxNumbOfQuestions;
     private TextView result, skipped;
     private Button returnButton;
     private Intent intent;
     private SharedPreferences sharedPreferences;
-    private float resultInPercent;
 
+    @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_result_screen);
         intent = getIntent();
-        correctAnswers = Integer.parseInt(intent.getStringExtra("correctAnswers"));
-        numbOfQuestions = Integer.parseInt(intent.getStringExtra("numbOfQuestions"));
         skippedQuestions = Integer.parseInt(intent.getStringExtra("skipped"));
+        flCorrectAnswers = Integer.parseInt(intent.getStringExtra("correctAnswers"));
+        flNumbOfQuestions = Integer.parseInt(intent.getStringExtra("numbOfQuestions"));
+        flMaxNumbOfQuestions = Integer.parseInt(intent.getStringExtra("maxNumbOfQuestions"));
 
-        float tryToCast = correctAnswers;
-        float tryToCast2 = numbOfQuestions;
+        float decimal = flNumbOfQuestions / flMaxNumbOfQuestions;
 
+        resultInPercent = Math.round(flCorrectAnswers / flNumbOfQuestions * 100);
 
-        resultInPercent = tryToCast / tryToCast2 * 100;
-
-        setDefaults("highscore" + intent.getStringExtra("continent"), resultInPercent, this);
+        if (decimal >= 0.1) {
+            String key = "highscore" + intent.getStringExtra("continent");
+            setDefaults(key, resultInPercent, this, "");
+        } else {
+            Toast.makeText(this, "The Result only gets saved, if you answered more than 80% of questions!", Toast.LENGTH_SHORT).show();
+        }
 
         returnButton = (Button) findViewById(R.id.returnButton);
-
         result = (TextView) findViewById(R.id.result);
         skipped = (TextView) findViewById(R.id.skippedQuestions);
 
-        result.setText(correctAnswers + " / " + numbOfQuestions + " correct | " + resultInPercent + "%");
+        result.setText(Math.round(flCorrectAnswers) + " / " + Math.round(flNumbOfQuestions) + " correct | " + resultInPercent + "%");
         skipped.setText("Skipped Questions: " + skippedQuestions);
 
         returnButton.setOnClickListener(new View.OnClickListener() {
@@ -59,20 +64,21 @@ public class ResultScreenActivity extends AppCompatActivity {
             }
         });
 
-
     }
 
-    public static void setDefaults(String key, Float value, Context context) {
-        if (value > getDefaults(key, context)) {
+
+    public static void setDefaults(String key, int value, Context context, String origin) {
+
+        if (value > getDefaults(key, context) || origin.equals("activity")) {
             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
             SharedPreferences.Editor editor = preferences.edit();
-            editor.putFloat(key, value);
-            editor.apply(); // or editor.commit() in case you want to write data instantly
+            editor.putInt(key, value);
+            editor.apply();
         }
     }
 
-    public static Float getDefaults(String key, Context context) {
+    public static int getDefaults(String key, Context context) {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-        return preferences.getFloat(key, 0);
+        return preferences.getInt(key, 0);
     }
 }
