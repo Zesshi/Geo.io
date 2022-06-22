@@ -208,6 +208,7 @@ public class GuessTheCapital extends AppCompatActivity implements SensorEventLis
             intent.putExtra("correctAnswers", String.valueOf(rightAnswer));
             intent.putExtra("skipped", String.valueOf(skippedQuestion));
             intent.putExtra("numbOfQuestions", String.valueOf(realQuestionNumber));
+            intent.putExtra("continent", "capital");
             finish();
             startActivity(intent);
         }
