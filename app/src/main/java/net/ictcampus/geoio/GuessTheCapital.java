@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -65,7 +66,6 @@ public class GuessTheCapital extends AppCompatActivity implements SensorEventLis
     private ArrayList<String> countrys = new ArrayList<>();
     private ArrayList<Button> buttons = new ArrayList<Button>();
     private ArrayList<String> answers = new ArrayList<String>();
-
     private String country, numberOfQuestions;
     private AlertDialog.Builder dialogBuilder;
     private Dialog dialog;
@@ -78,6 +78,7 @@ public class GuessTheCapital extends AppCompatActivity implements SensorEventLis
 
         countrys = getIntent().getStringArrayListExtra("countrys");
         ImageView returnImg = (ImageView) findViewById(R.id.returnImg_cap);
+        sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
 
         button_cap1 = (Button) findViewById(R.id.button_cap1);
         button_cap2 = (Button) findViewById(R.id.button_cap2);
@@ -103,12 +104,12 @@ public class GuessTheCapital extends AppCompatActivity implements SensorEventLis
         numberOfQuestions = intent.getStringExtra("numberOfQuestions");
         Log.wtf("numberOfQuestions", String.valueOf(numberOfQuestions));
 
-               /*    if (sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER) != null) {
-                        sensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-                        isAccelerometerSensorAvailable = true;
-                    } else {
-                        isAccelerometerSensorAvailable = false;
-                    }*/
+        if (sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER) != null) {
+            sensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+            isAccelerometerSensorAvailable = true;
+        } else {
+            isAccelerometerSensorAvailable = false;
+        }
 
 
         returnImg.setOnClickListener(new View.OnClickListener() {
@@ -221,7 +222,7 @@ public class GuessTheCapital extends AppCompatActivity implements SensorEventLis
         capitals.setTypeface(capitals.getTypeface(), Typeface.BOLD);
         capitals.setText((randomNum).toString().replace("[", "").replace("]", "").replace("\"", "").trim());
 
-       country = countries.get(index);
+        country = countries.get(index);
         countries.remove(countries.get(index));
 //        answers.set(0, country);
 
