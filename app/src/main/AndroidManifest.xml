@@ -16,6 +16,9 @@
         android:theme="@style/Theme.AppCompat.NoActionBar"
         tools:targetApi="31">
         <activity
+            android:name=".JokerScreen"
+            android:exported="false" />
+        <activity
             android:name=".highscoresActivity"
             android:exported="false" />
         <activity

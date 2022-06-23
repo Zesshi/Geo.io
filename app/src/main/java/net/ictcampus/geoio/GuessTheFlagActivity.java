@@ -106,6 +106,7 @@ public class GuessTheFlagActivity extends AppCompatActivity implements SensorEve
         realQuestionNumber = 0;
         intent = getIntent();
         numberOfQuestions = intent.getStringExtra("numberOfQuestions");
+        Log.e("NUMB", numberOfQuestions);
         language = intent.getStringExtra("language");
 
         if (sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER) != null) {
@@ -192,7 +193,7 @@ public class GuessTheFlagActivity extends AppCompatActivity implements SensorEve
         }
 
         isClickAllowed = true;
-        if (questionNumber == (numberOfQuestionsInt) +1) {
+        if (questionNumber == (numberOfQuestionsInt +1) ) {
             Intent intent = new Intent(getApplicationContext(), ResultScreenActivity.class);
             intent.putExtra("correctAnswers", String.valueOf(rightAnswer));
             intent.putExtra("skipped", String.valueOf(skippedQuestion));
@@ -412,6 +413,7 @@ public class GuessTheFlagActivity extends AppCompatActivity implements SensorEve
 
         if (numberOfQuestions.equals("max")) {
             numberOfQuestionsInt = (countries.size());
+            Log.e("HERE", String.valueOf(numberOfQuestionsInt));
         } else {
             numberOfQuestionsInt = Integer.valueOf(numberOfQuestions);
         }
