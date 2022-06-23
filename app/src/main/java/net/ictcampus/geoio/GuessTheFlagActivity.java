@@ -190,18 +190,21 @@ public class GuessTheFlagActivity extends AppCompatActivity implements SensorEve
         for (Button button : buttons) {
             button.setBackgroundColor(getResources().getColor(R.color.light_grey));
         }
+        int maxSize = countries.size();
+        Log.wtf("MAX", String.valueOf(maxSize));
 
-        isClickAllowed = true;
-        if (questionNumber == (numberOfQuestionsInt) +1) {
+        if (questionNumber == (numberOfQuestionsInt)) {
             Intent intent = new Intent(getApplicationContext(), ResultScreenActivity.class);
             intent.putExtra("correctAnswers", String.valueOf(rightAnswer));
             intent.putExtra("skipped", String.valueOf(skippedQuestion));
             intent.putExtra("numbOfQuestions", String.valueOf(realQuestionNumber));
             intent.putExtra("continent", "all");
-            intent.putExtra("maxNumbOfQuestions", String.valueOf(countries.size()));
+            intent.putExtra("maxNumbOfQuestions", String.valueOf(maxSize));
             finish();
             startActivity(intent);
         }
+
+        isClickAllowed = true;
 
         for (int i = 0; i < 6; i++) {
             answers.add("");

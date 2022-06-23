@@ -21,6 +21,5 @@ class GuessTheFlagActivityTest {
         this.guessTheFlagActivity.onCreate(savedInstanceState);
         //assert
         assertNotEquals(null, this.guessTheFlagActivity.button1);
-
     }
 }

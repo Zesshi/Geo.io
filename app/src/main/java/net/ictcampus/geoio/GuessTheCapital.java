@@ -91,14 +91,12 @@ public class GuessTheCapital extends AppCompatActivity implements SensorEventLis
         correct = (TextView) findViewById(R.id.correct1);
         capitals = (TextView) findViewById(R.id.capital);
 
-
         buttons.add(button_cap1);
         buttons.add(button_cap2);
         buttons.add(button_cap3);
         buttons.add(button_cap4);
         buttons.add(button_cap5);
         buttons.add(button_cap6);
-
 
         questionNumber = 1;
         rightAnswer = 0;
@@ -209,6 +207,7 @@ public class GuessTheCapital extends AppCompatActivity implements SensorEventLis
             intent.putExtra("skipped", String.valueOf(skippedQuestion));
             intent.putExtra("numbOfQuestions", String.valueOf(realQuestionNumber));
             intent.putExtra("continent", "capital");
+            intent.putExtra("maxNumbOfQuestions", String.valueOf(countries.size()));
             finish();
             startActivity(intent);
         }

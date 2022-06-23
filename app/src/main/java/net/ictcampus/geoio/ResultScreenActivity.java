@@ -42,7 +42,7 @@ public class ResultScreenActivity extends AppCompatActivity {
 
         resultInPercent = Math.round(flCorrectAnswers / flNumbOfQuestions * 100);
 
-        if (decimal >= 0.1) {
+        if (decimal >= 0.9) {
             String key = "highscore" + intent.getStringExtra("continent");
             setDefaults(key, resultInPercent, this, "");
         } else {
