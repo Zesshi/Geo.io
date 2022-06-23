@@ -199,6 +199,7 @@ public class GuessTheFlagActivity extends AppCompatActivity implements SensorEve
             intent.putExtra("skipped", String.valueOf(skippedQuestion));
             intent.putExtra("numbOfQuestions", String.valueOf(realQuestionNumber));
             intent.putExtra("continent", "all");
+            intent.putExtra("maxNumbOfQuestions", String.valueOf(countries.size()));
             finish();
             startActivity(intent);
         }

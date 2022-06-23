@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -49,22 +50,22 @@ public class GuessTheCapital extends AppCompatActivity implements SensorEventLis
 
     private static final String TAG = "Capitals";
     private TextView capitals, textView_cap2, correct;
-    private Button button_cap1, button_cap2, button_cap3, button_cap4, button_cap5, button_cap6, correctButton, next_cap;
-    private int questionNumber, realQuestionNumber, rightAnswer, skippedQuestion, numberOfQuestionsInt;
     private final String BASEURL = "https://restcountries.com/v3.1/all";
 
+
+    private int questionNumber, realQuestionNumber, rightAnswer, skippedQuestion, numberOfQuestionsInt;
+    private Button button_cap1, button_cap2, button_cap3, button_cap4, button_cap5, button_cap6, correctButton, next_cap;
     private boolean isAccelerometerSensorAvailable, notFirstTime = false, isClickAllowed = true;
+    private float currentX, currentY, currentZ, lastX, lastY, lastZ, xDifference, yDifference, zDifference, shakeThreshold = 12f;
     private SensorManager sensorManager;
     private Sensor sensor;
     List<JSONArray> response = new ArrayList<>();
-    private float currentX, currentY, currentZ, lastX, lastY, lastZ, xDifference, yDifference, zDifference, shakeThreshold = 12f;
 
     private ArrayList<String> countries = new ArrayList<String>();
     private ArrayList<String> Caps = new ArrayList<String>();
     private ArrayList<String> countrys = new ArrayList<>();
     private ArrayList<Button> buttons = new ArrayList<Button>();
     private ArrayList<String> answers = new ArrayList<String>();
-
     private String country, numberOfQuestions;
     private AlertDialog.Builder dialogBuilder;
     private Dialog dialog;
@@ -77,6 +78,7 @@ public class GuessTheCapital extends AppCompatActivity implements SensorEventLis
 
         countrys = getIntent().getStringArrayListExtra("countrys");
         ImageView returnImg = (ImageView) findViewById(R.id.returnImg_cap);
+        sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
 
         button_cap1 = (Button) findViewById(R.id.button_cap1);
         button_cap2 = (Button) findViewById(R.id.button_cap2);
@@ -84,22 +86,17 @@ public class GuessTheCapital extends AppCompatActivity implements SensorEventLis
         button_cap4 = (Button) findViewById(R.id.button_cap4);
         button_cap5 = (Button) findViewById(R.id.button_cap5);
         button_cap6 = (Button) findViewById(R.id.button_cap6);
-        next_cap = (Button) findViewById(R.id.next_cap);
-        intent = getIntent();
-
         textView_cap2 = (TextView) findViewById(R.id.textView_cap2);
+        next_cap = (Button) findViewById(R.id.next_cap);
         correct = (TextView) findViewById(R.id.correct1);
         capitals = (TextView) findViewById(R.id.capital);
-
-
+        intent = getIntent();
         buttons.add(button_cap1);
         buttons.add(button_cap2);
         buttons.add(button_cap3);
         buttons.add(button_cap4);
         buttons.add(button_cap5);
         buttons.add(button_cap6);
-
-
         questionNumber = 1;
         rightAnswer = 0;
         skippedQuestion = 0;
@@ -107,12 +104,12 @@ public class GuessTheCapital extends AppCompatActivity implements SensorEventLis
         numberOfQuestions = intent.getStringExtra("numberOfQuestions");
         Log.wtf("numberOfQuestions", String.valueOf(numberOfQuestions));
 
-                  /*  if (sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER) != null) {
-                        sensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-                        isAccelerometerSensorAvailable = true;
-                    } else {
-                        isAccelerometerSensorAvailable = false;
-                    }*/
+        if (sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER) != null) {
+            sensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+            isAccelerometerSensorAvailable = true;
+        } else {
+            isAccelerometerSensorAvailable = false;
+        }
 
 
         returnImg.setOnClickListener(new View.OnClickListener() {
@@ -155,6 +152,7 @@ public class GuessTheCapital extends AppCompatActivity implements SensorEventLis
             });
         }
 
+
         getCapital(BASEURL);
 
     }
@@ -195,20 +193,19 @@ public class GuessTheCapital extends AppCompatActivity implements SensorEventLis
 
     private void renderGame() {
 
-
         for (Button button : buttons) {
             button.setBackgroundColor(getResources().getColor(R.color.light_grey));
         }
 
+
         isClickAllowed = true;
-
-
-        if (questionNumber == (numberOfQuestionsInt + 1)) {
+        if (questionNumber == (numberOfQuestionsInt) + 1) {
             Intent intent = new Intent(getApplicationContext(), ResultScreenActivity.class);
             intent.putExtra("correctAnswers", String.valueOf(rightAnswer));
             intent.putExtra("skipped", String.valueOf(skippedQuestion));
             intent.putExtra("numbOfQuestions", String.valueOf(realQuestionNumber));
-            intent.putExtra("continent", "capital");
+            intent.putExtra("continent", "all");
+            intent.putExtra("maxNumbOfQuestions", String.valueOf(countries.size()));
             finish();
             startActivity(intent);
         }
@@ -227,7 +224,7 @@ public class GuessTheCapital extends AppCompatActivity implements SensorEventLis
 
         country = countries.get(index);
         countries.remove(countries.get(index));
-        answers.set(0, country);
+//        answers.set(0, country);
 
 
         ArrayList<String> temp = new ArrayList<>();
@@ -260,10 +257,59 @@ public class GuessTheCapital extends AppCompatActivity implements SensorEventLis
         }
         textView_cap2.setText("Question " + questionNumber + "/" + numberOfQuestionsInt);
         correct.setText("Correct: " + rightAnswer);
+
         Log.wtf("numberOfQuestions the second", String.valueOf(numberOfQuestions));
 
     }
 
+    public void onSensorChanged(SensorEvent sensorEvent) {
+        currentX = sensorEvent.values[0];
+        currentY = sensorEvent.values[1];
+        currentZ = sensorEvent.values[2];
+
+        if (notFirstTime) {
+            xDifference = Math.abs(lastX - currentX);
+            yDifference = Math.abs(lastY - currentY);
+            zDifference = Math.abs(lastZ - currentZ);
+
+            if ((xDifference > shakeThreshold && yDifference > shakeThreshold) ||
+                    (xDifference > shakeThreshold && zDifference > shakeThreshold) ||
+                    (yDifference > shakeThreshold && zDifference > shakeThreshold)) {
+                if (isClickAllowed) {
+                    isClickAllowed = false;
+                    showSolution(correctButton);
+                    Toast.makeText(getApplicationContext(), "Skipped Question", Toast.LENGTH_SHORT).show();
+                }
+            }
+        }
+
+        lastX = currentX;
+        lastY = currentY;
+        lastZ = currentZ;
+        notFirstTime = true;
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int i) {
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if (isAccelerometerSensorAvailable) {
+            sensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL);
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (isAccelerometerSensorAvailable) {
+            sensorManager.unregisterListener(this);
+        }
+    }
 
     private void getCapital(String urlParam) {
         ExecutorService executor = Executors.newSingleThreadExecutor();
@@ -346,64 +392,22 @@ public class GuessTheCapital extends AppCompatActivity implements SensorEventLis
         }
 
         Log.e("countrys", String.valueOf(countries));
+        Log.e("Capitals", String.valueOf(response));
+
+
+        textView_cap2.setText("Question " + questionNumber + "/" + numberOfQuestionsInt);
+        correct.setText("Correct: " + rightAnswer);
+
 
         if (numberOfQuestions.equals("max")) {
-            numberOfQuestionsInt = countries.size();
+            numberOfQuestionsInt = (countries.size());
         } else {
             numberOfQuestionsInt = Integer.valueOf(numberOfQuestions);
         }
-        textView_cap2.setText("Question " + questionNumber + "/" + numberOfQuestionsInt);
-        correct.setText("Correct: " + rightAnswer);
+
         renderGame();
     }
 
-    public void onSensorChanged(SensorEvent sensorEvent) {
-        currentX = sensorEvent.values[0];
-        currentY = sensorEvent.values[1];
-        currentZ = sensorEvent.values[2];
 
-        if (notFirstTime) {
-            xDifference = Math.abs(lastX - currentX);
-            yDifference = Math.abs(lastY - currentY);
-            zDifference = Math.abs(lastZ - currentZ);
-
-            if ((xDifference > shakeThreshold && yDifference > shakeThreshold) ||
-                    (xDifference > shakeThreshold && zDifference > shakeThreshold) ||
-                    (yDifference > shakeThreshold && zDifference > shakeThreshold)) {
-                if (isClickAllowed) {
-                    isClickAllowed = false;
-                    showSolution(correctButton);
-                    Toast.makeText(getApplicationContext(), "Skipped Question", Toast.LENGTH_SHORT).show();
-                }
-            }
-        }
-
-        lastX = currentX;
-        lastY = currentY;
-        lastZ = currentZ;
-        notFirstTime = true;
-    }
-
-    @Override
-    public void onAccuracyChanged(Sensor sensor, int i) {
-
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-        if (isAccelerometerSensorAvailable) {
-            sensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL);
-        }
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        if (isAccelerometerSensorAvailable) {
-            sensorManager.unregisterListener(this);
-        }
-    }
 }
 
