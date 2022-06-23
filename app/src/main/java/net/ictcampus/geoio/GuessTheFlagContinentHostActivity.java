@@ -141,7 +141,6 @@ public class GuessTheFlagContinentHostActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 numberOfQuestions = count.getText().toString();
-                Log.e("dfghjk", String.valueOf(count.getText().toString().trim().length()));
                 if (count.getText().toString().trim().length() == 0) {
                     Toast.makeText(getApplicationContext(), "You must enter a number or select \"all\"", Toast.LENGTH_SHORT).show();
                 } else if ((Integer.parseInt(numberOfQuestions) < 1) || (Integer.parseInt(numberOfQuestions) > numOfCountires) ) {

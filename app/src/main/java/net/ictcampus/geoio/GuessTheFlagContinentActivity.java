@@ -10,6 +10,7 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.media.Image;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -25,6 +26,7 @@ import com.squareup.picasso.Picasso;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
@@ -45,13 +47,13 @@ import java.util.concurrent.Executors;
 public class GuessTheFlagContinentActivity extends AppCompatActivity implements SensorEventListener {
 
     private static final String TAG = "FlagsOfEurope";
-    private ImageView flag, returnArr;
+    private ImageView flag, returnArr, joker;
     private Button answer1, answer2, answer3, answer4, answer5, answer6, correctBtn, nextQ;
     private String correctAnswer, combined, antarctic;
-    private TextView correctTxt, contName, question;
+    private TextView correctTxt, contName, question, coinsTxt;
     private SensorManager sensorManager;
     private Sensor sensor;
-    private int questionnumber;
+    private int questionnumber, coins;
     private int numberOfCorrect;
     private int skippedQuestions;
     private int answeredQuestions;
@@ -101,9 +103,12 @@ public class GuessTheFlagContinentActivity extends AppCompatActivity implements 
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
 
         correctTxt = (TextView) findViewById(R.id.correctTxt);
+        coinsTxt = (TextView) findViewById(R.id.coinsTxt);
 
         questionnumber = 1;
         numberOfCorrect = 0;
+        coins = getCoins();
+
         skippedQuestions = 0;
         answeredQuestions = 0;
 
@@ -113,6 +118,7 @@ public class GuessTheFlagContinentActivity extends AppCompatActivity implements 
         question = (TextView) findViewById(R.id.question);
 
         returnArr = (ImageView) findViewById(R.id.returnArr);
+        joker = (ImageView) findViewById(R.id.joker);
 
         contName = (TextView) findViewById(R.id.continentName);
         contName.setText("Guess the Flag - " + regions.get(0));
@@ -128,6 +134,13 @@ public class GuessTheFlagContinentActivity extends AppCompatActivity implements 
         returnArr.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 showPupUp();
+            }
+        });
+
+        joker.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showJokerInfo();
             }
         });
 
@@ -153,6 +166,7 @@ public class GuessTheFlagContinentActivity extends AppCompatActivity implements 
                         if (button.getText().equals(correctAnswer)) {
                             numberOfCorrect += 1;
                             button.setBackgroundColor(getResources().getColor(R.color.green));
+                            setCoins();
 
                         } else {
                             button.setBackgroundColor(getResources().getColor(R.color.red));
@@ -161,6 +175,7 @@ public class GuessTheFlagContinentActivity extends AppCompatActivity implements 
                         }
                         answeredQuestions += 1;
                         correctTxt.setText("Correct: " + numberOfCorrect);
+                        coinsTxt.setText("Coins: "+ getCoins());
 
 
                     }
@@ -228,7 +243,6 @@ public class GuessTheFlagContinentActivity extends AppCompatActivity implements 
 
 
     private void getFlags(String urlParam) {
-        Log.e("sdfgh", String.valueOf(regions.get(0)));
         ExecutorService executor = Executors.newSingleThreadExecutor();
         Handler handler = new Handler(Looper.getMainLooper());
         executor.execute(new Runnable() {
@@ -340,6 +354,7 @@ public class GuessTheFlagContinentActivity extends AppCompatActivity implements 
 
         question.setText("Question " + questionnumber + "/" + numbOfQuestions);
         correctTxt.setText("Correct: " + numberOfCorrect);
+        coinsTxt.setText("Coins: "+ coins);
         Log.e(TAG, String.valueOf(nameArray));
         renderImage();
     }
@@ -348,11 +363,12 @@ public class GuessTheFlagContinentActivity extends AppCompatActivity implements 
 
         Log.e("SIIIZE", String.valueOf(nameArray.size() + 1));
         Log.e("NR", String.valueOf(questionnumber));
-        if (questionnumber == (numbOfQuestions +1)) {
+        if (questionnumber == (numbOfQuestions +1 )) {
             Intent resultScreen = new Intent(getApplicationContext(), ResultScreenActivity.class);
             resultScreen.putExtra("correctAnswers", String.valueOf(numberOfCorrect));
             resultScreen.putExtra("skipped", String.valueOf(skippedQuestions));
             resultScreen.putExtra("numbOfQuestions", String.valueOf(answeredQuestions));
+            resultScreen.putExtra("maxNumbOfQuestions", String.valueOf(nameArray.size()));
             if (regions.get(0).equals("oceania")){
                 resultScreen.putExtra("continent", "Oceania / Antarctic");
             } else {
@@ -496,6 +512,42 @@ public class GuessTheFlagContinentActivity extends AppCompatActivity implements 
                 startActivity(menu);
             }
         });
+    }
+
+    public int getCoins() {
+        return CoinsClass.getCoins("coins", this);
+    }
+
+    public void setCoins() {
+        CoinsClass.setCoins("coins", (coins+1), this);
+    }
+
+    private void showJokerInfo() {
+        dialogBuilder = new AlertDialog.Builder(this);
+        final View popUp = getLayoutInflater().inflate(R.layout.activity_joker_screen, null);
+
+        Log.e("AMOUNT: ", String.valueOf(coins));
+
+        dialogBuilder.setView(popUp);
+        dialog = dialogBuilder.create();
+        dialog.show();
+
+        TextView amountOfCoins = (TextView) popUp.findViewById(R.id.amountOfCoins);
+        amountOfCoins.setText("Your Coins: "+getCoins());
+
+        Button jokerBtn = (Button) popUp.findViewById(R.id.jokerBtn);
+        jokerBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (getCoins() <20) {
+                    Toast.makeText(getApplicationContext(), "You have not enough coins!", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+
+
+
     }
 
 
