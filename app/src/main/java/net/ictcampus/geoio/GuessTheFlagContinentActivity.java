@@ -166,7 +166,7 @@ public class GuessTheFlagContinentActivity extends AppCompatActivity implements 
                         if (button.getText().equals(correctAnswer)) {
                             numberOfCorrect += 1;
                             button.setBackgroundColor(getResources().getColor(R.color.green));
-                            setCoins();
+                            setCoins(1);
 
                         } else {
                             button.setBackgroundColor(getResources().getColor(R.color.red));
@@ -386,7 +386,6 @@ public class GuessTheFlagContinentActivity extends AppCompatActivity implements 
 
         if (pngURL.size() != 0) {
             Integer randNr = new Random().nextInt(pngURL.size());
-
             String randomURL = pngURL.get(randNr);
             pngURL.remove(randomURL);
             Picasso.get().load(randomURL).into(flag);
@@ -518,8 +517,8 @@ public class GuessTheFlagContinentActivity extends AppCompatActivity implements 
         return CoinsClass.getCoins("coins", this);
     }
 
-    public void setCoins() {
-        CoinsClass.setCoins("coins", (coins+1), this);
+    public void setCoins(int value ) {
+        CoinsClass.setCoins("coins", (coins+= value), this);
     }
 
     private void showJokerInfo() {
@@ -541,6 +540,15 @@ public class GuessTheFlagContinentActivity extends AppCompatActivity implements 
             public void onClick(View v) {
                 if (getCoins() <20) {
                     Toast.makeText(getApplicationContext(), "You have not enough coins!", Toast.LENGTH_SHORT).show();
+                    dialog.dismiss();
+                } else {
+                    dialog.dismiss();
+                    correctBtn.setBackgroundColor(getResources().getColor(R.color.green));
+                    numberOfCorrect +=1;
+                    setCoins(-20);
+                    clickAllowed = false;
+                    correctTxt.setText("Correct: " + numberOfCorrect);
+                    coinsTxt.setText("Coins: "+ getCoins());
                 }
             }
         });
